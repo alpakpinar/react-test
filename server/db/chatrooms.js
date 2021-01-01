@@ -3,6 +3,7 @@ Database functionality regarding chat rooms
 */
 const mongodb = require('mongodb');
 const crypto = require('crypto');
+const { getUserByName } = require('./users');
 
 async function getMessages(chatRoomName, client) {
     /*
@@ -152,7 +153,33 @@ async function saveChatRoomToUser(chatRoom, contacts, client) {
     return result;
 }
 
-async function deleteChatRoomFromUser(deletedChatRoom, client) {
+async function deleteChatRoomFromASingleUser(chatRoomId, username, client) {
+    /*
+    Remove the chat room from the specified user's chatgroup list.
+    */
+    const user = await client.db('newdb').collection('users').findOne({username: username})
+    const currentChatGroups = user.chatgroups
+    // Find the chat room to be deleted
+    const chatRoomToDelete = currentChatGroups.find(room => {
+        return room.roomId === chatRoomId
+    })
+    const indexToRemove = currentChatGroups.indexOf(chatRoomToDelete)
+    currentChatGroups.splice(indexToRemove, 1)
+
+    // Now, update the user records in the database
+    const updateFilter = {
+        username: username
+    }
+    const updateList = {
+        $set: {
+            chatgroups: currentChatGroups
+        }
+    }
+    const result = await client.db('newdb').collection('users').updateOne(updateFilter, updateList)
+    return result
+}
+
+async function deleteChatRoomFromAllUsers(deletedChatRoom, client) {
     /*
     Upon deletion from the database, delete the chat room from the user records as well
     */
@@ -182,6 +209,34 @@ async function deleteChatRoomFromUser(deletedChatRoom, client) {
     return result
 }
 
+async function removeContactFromChatRoom(chatRoomId, usernameToRemove, client) {
+    /* 
+    Removes a specific contact (specified by username) from the specified chat room.
+    */
+    const chatRoom = await getChatRoomByID(chatRoomId, client)
+    const currentContacts = chatRoom.contacts
+    // Find the user entry to be removed
+    const contactToDelete = currentContacts.find(contact => {
+        return contact.username === usernameToRemove
+    })
+    const indexToDelete = currentContacts.indexOf(contactToDelete)
+    // Delete the user entry from the contact list
+    currentContacts.splice(indexToDelete, 1)
+
+    // Now, update the chat group in the database
+    const filter = {
+        roomId: chatRoom.roomId 
+    }
+    const update = {
+        $set : {
+            contacts: currentContacts
+        }
+    }
+
+    const result = await client.db('newdb').collection('chatrooms').updateOne(filter, update)
+    return result
+}
+
 module.exports = {
     getMessages,
     saveMessage,
@@ -191,5 +246,7 @@ module.exports = {
     getChatRoomByID,
     deleteChatRoom,
     saveChatRoomToUser,
-    deleteChatRoomFromUser,
+    deleteChatRoomFromASingleUser,
+    deleteChatRoomFromAllUsers,
+    removeContactFromChatRoom
 };

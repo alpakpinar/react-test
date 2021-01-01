@@ -27,6 +27,7 @@ class HomePage extends React.Component {
         this.isActiveTab = this.isActiveTab.bind(this);
         this.changeActiveTab = this.changeActiveTab.bind(this);
         this.renderMainSide = this.renderMainSide.bind(this);
+        this.handleExitGroup = this.handleExitGroup.bind(this);
     }
     
     handleLogout(e) {
@@ -35,14 +36,14 @@ class HomePage extends React.Component {
         window.location.reload();
     }
 
-    handleDeleteGroup(e) {
-        /* Handle the situation where user selects to leave and delete the group. */
+    handleExitGroup(e) {
+        /* Handle the situation where user selects to leave the group. */
         e.preventDefault()
-        // We send a DELETE request to /api/chatrooms to remove the selected chat room from the database
+        // We send a DELETE request to /api/chatrooms/{roomId} to remove the user from the selected chat room
         const request_body = {
-            chatRoomName: e.target.id
+            usernameToRemove: this.state.username
         }
-        fetch('/api/chatrooms', {
+        fetch(`/api/chatrooms/${e.target.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type' : 'application/json',
@@ -165,7 +166,7 @@ class HomePage extends React.Component {
                                     className={`room-item ${this.isActiveTab(room.roomId) ? "active" : ""}`}>
                                         {room.name}
                                         <div className="chat-close-button-container">
-                                            <a className="chat-close-button" id={room.name} onClick={this.handleDeleteGroup}></a>
+                                            <a className="chat-close-button" id={room.roomId} onClick={this.handleExitGroup}></a>
                                             <span className="chat-close-button-tooltip">Gruptan Ayrıl</span>
                                         </div>
                                     </li>

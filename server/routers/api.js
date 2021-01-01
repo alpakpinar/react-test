@@ -150,6 +150,7 @@ apiRouter.get('/chatrooms', async (req, res) => {
 });
 
 apiRouter.delete('/chatrooms', async (req, res) => {
+    /* Use this path to directly delete a chatroom from all users */
     const validRequest = req.body.chatRoomName !== undefined;
     if (!validRequest) {
         return res.status(400).json({ message: 'Chat room name not provided' });
@@ -160,7 +161,7 @@ apiRouter.delete('/chatrooms', async (req, res) => {
         const deleteResult = await chatrooms.deleteChatRoom(req.body.chatRoomName, client);
 
         // After sending the response, delete the chat room from the user records as well
-        chatrooms.deleteChatRoomFromUser(chatRoomBeingDeleted, client)
+        chatrooms.deleteChatRoomFromAllUsers(chatRoomBeingDeleted, client)
         res.json({ message: 'Chatroom deleted' });
 
     } catch (error) {
@@ -207,6 +208,27 @@ apiRouter.patch('/chatrooms', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+});
+
+apiRouter.delete('/chatrooms/:chatRoomId', async (req, res) => {
+    /* 
+    Delete a specified contact from the chat room with the given chat room ID.
+    */
+    const usernameToRemove = req.body.usernameToRemove
+    if (!usernameToRemove) {
+        return res.status(400).json({ message: "Username not specified" })
+    }
+    // Remove the user from the chatroom contacts list
+    let result
+    try {
+        result = await chatrooms.removeContactFromChatRoom(req.params.chatRoomId, usernameToRemove, client)
+        // Also remove the chat room from user records for consistency
+        _ = await chatrooms.deleteChatRoomFromASingleUser(req.params.chatRoomId, usernameToRemove, client)
+        res.json({ message: `User ${usernameToRemove} removed from ${req.params.chatroomId} chat group`})
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+
 });
 
 module.exports = apiRouter;
