@@ -167,26 +167,44 @@ class ChatRoom extends React.Component {
         }
     }
 
+    renderMessages() {
+        /* Helper function to render the message list from the state of the component. */
+        return this.state.messagelist.map((message, i) => {
+            // This one is only for "user joined" or "user left" messages
+            if (message?.type === 'user-notification') {
+                return (
+                    <div className="user-joined-left-msg">
+                        <p><i>{message.body}</i></p>
+                    </div>
+                )
+            }
+            // This one is for all other normal messages
+            else {
+                return (
+                    <div className={`single-message-container ${
+                        message.senderUsername === this.props.username ? "my-message" : "received-message" 
+                    }`}>
+                        <li
+                            key={i}
+                            className={`message-item ${
+                                message.senderUsername === this.props.username ? "my-message" : "received-message" 
+                            }`}
+                        >
+                            {message.body}
+                        </li>
+                        <span className="username-stamp">{message.senderUsername}, {new Date(message.date).toString().split(' ').slice(1,5).join(' ')}</span>
+                    </div>
+                    )}
+                }
+            )
+    }
+
     render() {
         return (
             <div className="chat-room-container">
                 <div className="messages-container">
                     <ol className="messages-list">
-                        {this.state.messagelist.map((message, i) => (
-                            <div className={`single-message-container ${
-                                message.senderUsername === this.props.username ? "my-message" : "received-message" 
-                            }`}>
-                                <li
-                                    key={i}
-                                    className={`message-item ${
-                                        message.senderUsername === this.props.username ? "my-message" : "received-message" 
-                                    }`}
-                                >
-                                    {message.body}
-                                </li>
-                                <span className="username-stamp">{message.senderUsername}, {new Date(message.date).toString().split(' ').slice(1,5).join(' ')}</span>
-                            </div>
-                        ))}
+                        {this.renderMessages()}
                     </ol>
                     <div ref={el => this.messagesEnd = el}>
                     </div>
