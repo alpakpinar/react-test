@@ -1,0 +1,65 @@
+div.form-container {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    margin-left: 25em;
+    margin-right: 25em;
+    padding: 40px;
+    border: 3px solid green;
+    border-radius: 20px;
+}
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+button.register {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 20px;
+}
+
+button.register:hover {
+    opacity: 0.8;
+}
+
+h1.register-title {
+    color: black;
+    text-align: center;
+    font-size: 45px;
+}
+
+p.register-text {
+    text-align: center;
+    font-size: 25px;
+}
+
+p.success-text {
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+div.back-to-home {
+    text-align: center;
+    font-size: 25px;
+}
+
+.back-to-home-button {
+    color:green;
+    font-size: 25px;
+}
+
+.back-to-home-button:hover {
+    text-decoration: underline;
+}
