@@ -12,6 +12,10 @@ class HomePage extends React.Component {
         if (sessionStorage.getItem('token') !== null) {
             username = JSON.parse(sessionStorage.getItem('token')).username;
         }
+
+        else if (localStorage.getItem('token') !== null) {
+            username = JSON.parse(localStorage.getItem('token')).username;    
+        }
         
         this.state = {
             username: username,
@@ -28,12 +32,34 @@ class HomePage extends React.Component {
         this.changeActiveTab = this.changeActiveTab.bind(this);
         this.renderMainSide = this.renderMainSide.bind(this);
         this.handleExitGroup = this.handleExitGroup.bind(this);
+        this.userLoggedIn = this.userLoggedIn.bind(this);
     }
     
     handleLogout(e) {
+        /* 
+        Upon logout, remove the user tokens from the session and local storages.
+        Token in local storage may or may not exist, but we still need to check there.
+        */
         e.preventDefault();
         sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
         window.location.reload();
+    }
+
+    userLoggedIn() {
+        // Check the session and local storages for user token
+        const tokenStringFromSS = sessionStorage.getItem('token');
+        const userTokenFromSS = JSON.parse(tokenStringFromSS);
+        if (userTokenFromSS?.token) {
+            return true
+        }
+
+        const tokenStringFromLS = localStorage.getItem('token')
+        const userTokenFromLS = JSON.parse(tokenStringFromLS)
+        if (userTokenFromLS?.token) {
+            return true
+        }
+        return false
     }
 
     handleExitGroup(e) {
@@ -143,7 +169,7 @@ class HomePage extends React.Component {
     render() {
         // Login needed for access to this page
         // If we can't find the login token stored, redirect to login page
-        if (!this.props.getToken()) {
+        if (!this.userLoggedIn()) {
             return <Redirect to="/login" />
         }
 

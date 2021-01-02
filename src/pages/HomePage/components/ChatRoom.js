@@ -1,6 +1,5 @@
 import React from 'react';
 import './ChatRoom.css';
-// import {SocketIOClient} from 'socket.io-client';
 import { io } from 'socket.io-client';
 // import { MessageBox } from 'react-chat-elements';
 

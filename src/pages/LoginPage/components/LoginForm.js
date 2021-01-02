@@ -8,11 +8,11 @@ class LoginForm extends React.Component {
         this.state = {
             username: '',
             password: '',
-            loginMessage: ''
+            loginMessage: '',
+            saveToLocalStorage: false
         };
         
         this.handleSubmit = this.handleSubmit.bind(this);
-
     }
 
     setUsername(username) {
@@ -22,7 +22,12 @@ class LoginForm extends React.Component {
     setPassword(password) {
         this.setState({password: password})
     }
-
+    
+    saveTokenToLocalStorage(token) {
+        /* To be used when user checks the "remember me" box */
+        localStorage.setItem('token', JSON.stringify(token))
+    }
+    
     async loginUser(credentials) {
         return fetch('/login', {
             method: 'POST',
@@ -36,12 +41,21 @@ class LoginForm extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault();
-        const response = await this.loginUser(this.state);
+        const response = await this.loginUser({
+            username: this.state.username,
+            password: this.state.password
+        });
         if (response.message === 'logged-in') {
-            this.props.setToken({
+            const userToken = {
                 token: response.token,
                 username: response.username
-            });
+            } 
+            this.props.setToken(userToken)
+            // If "remember me" box is checked, save the token into the local storage as well so that it will be kept there
+            if (this.state.saveToLocalStorage) {
+                this.saveTokenToLocalStorage(userToken)
+            }
+
             // Reload page so that we get redirected
             window.location.reload();
         }
@@ -69,7 +83,7 @@ class LoginForm extends React.Component {
                         <p>{this.state.loginMessage}</p>
                     </div>
                     <form className="register-form" onSubmit={this.handleSubmit}>
-                        <label for="username">Kullanici Adi</label>
+                        <label>Kullanici Adi</label>
                         <input type="text" 
                                placeholder="Kullanici adi" 
                                name="username" 
@@ -77,7 +91,7 @@ class LoginForm extends React.Component {
                                required>
                                </input>
     
-                        <label for="password">Sifre</label>
+                        <label>Sifre</label>
                         <input type="password" 
                                placeholder="Sifre" 
                                name="password"
@@ -87,6 +101,10 @@ class LoginForm extends React.Component {
     
                         <button className="register" type="submit">Giris Yap</button>
                     </form>
+                    <div className="remember-me-checkbox-div">
+                        <input className="remember-me-checkbox" type="checkbox" onChange={e => this.setState({saveToLocalStorage: !this.state.saveToLocalStorage})}></input>
+                        <label>Beni hatirla</label>
+                    </div>
                 </div>
                 <div className="back-to-home">
                     <p>Ana sayfaya geri donmek icin <NavLink className="back-to-home-button" to="/">buraya</NavLink> tiklayabilirsin.</p>

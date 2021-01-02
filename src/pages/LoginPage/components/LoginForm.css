@@ -44,6 +44,21 @@ p.register-text {
     font-size: 25px;
 }
 
+div.remember-me-checkbox-div {
+    margin: 10px 0;
+    font-size: 20px;
+}
+
+input.remember-me-checkbox {
+    height: 18px;
+    width: 18px;
+    margin-right: 5px;
+}
+
+input.remember-me-checkbox:hover {
+    cursor: pointer;
+}
+
 div.back-to-home {
     text-align: center;
     font-size: 25px;
