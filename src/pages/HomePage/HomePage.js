@@ -94,6 +94,11 @@ class HomePage extends React.Component {
         this.setState({activeTabId: tabId});
     }
 
+    showSettingsDropdown(e) {
+        e.preventDefault()
+        document.getElementById('dropdown-menu').classList.toggle('dropdown-show')
+    }
+
     getHeader(all_rooms) {
         /* Get the appropriate header for the room we're displaying on the right hand side of the main screen */
         let header = null;
@@ -127,6 +132,22 @@ class HomePage extends React.Component {
                 contacts: jsonResponse.contacts
             })
         })
+
+        // Event listener to close dropdown menu in case user clicks somewhere random
+        document.addEventListener('click', this.closeDropdownOnClick)
+    }
+
+    closeDropdownOnClick(e) {
+        /* 
+        If the dropdown menu is open and user clicks outside the dropdown button to close it,
+        handle the situation and close the dropdown menu.
+        */
+        if (!e.target.matches('.settings-dropdown-btn')) {
+            const dropdown_menu = document.getElementById('dropdown-menu')
+            if (dropdown_menu.classList.contains('dropdown-show')) {
+                dropdown_menu.classList.remove('dropdown-show')
+            }
+        }
     }
 
     renderMainSide() {
@@ -240,6 +261,13 @@ class HomePage extends React.Component {
                     <div className="home-main">
                         <div className="main-room-header">
                             <h2>{this.getHeader(all_rooms)}</h2>
+                            <div className="settings-div">
+                                <button className="settings-dropdown-btn" onClick={this.showSettingsDropdown}>Ayarlar</button>
+                                <div id="dropdown-menu" className="dropdown-content">
+                                    <a onClick={null} href="#">Sohbet Geçmişini Temizle</a>
+                                    <a onClick={null} href="#">Gruptan Ayrıl</a>
+                                </div>
+                            </div>
                         </div>
                         {this.renderMainSide()}
                     </div>
