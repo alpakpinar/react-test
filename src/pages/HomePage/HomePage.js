@@ -134,7 +134,9 @@ class HomePage extends React.Component {
         })
 
         // Event listener to close dropdown menu in case user clicks somewhere random
-        document.addEventListener('click', this.closeDropdownOnClick)
+        if (this.userLoggedIn()) {
+            document.addEventListener('click', this.closeDropdownOnClick)
+        }
     }
 
     closeDropdownOnClick(e) {
