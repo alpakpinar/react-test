@@ -141,34 +141,34 @@ class RegisterForm extends React.Component {
             <div>
                 <div className="header-container">
                     <h1 className="register-title">Kaydol!</h1>
-                    <p className="register-text">Merhaba, asagidaki alanlari doldurarak kaydolabilirsin.</p> 
+                    <p className="register-text">Merhaba, aşağıdaki alanları doldurarak kaydolabilirsin.</p> 
                 </div>
                 <div className="form-container">
                     <div className="msg-div">
                         <p className="success-text">{this.state.signin_msg}</p>
                     </div>
                     <form className="register-form" onSubmit={this.onSubmit}>
-                        <label for="username">E-posta</label>
+                        <label for="username">E-posta Adresi</label>
                         <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent} required></input>
                         <div className="warning-message">{this.state.warning_messages['email']}</div>
 
-                        <label for="username">Kullanici Adi</label>
-                        <input type="text" placeholder="Kullanici adi" name="username" required></input>
-                        <div className="warning-message">{}</div>
+                        <label for="username">Kullanıcı Adı</label>
+                        <input type="text" placeholder="Kullanıcı adı" name="username" required></input>
+                        <div className="warning-message"></div>
     
-                        <label for="password">Sifre</label>
-                        <input type="password" placeholder="Sifre" name="password" onChange={this.checkPasswordContent} required></input>
+                        <label for="password">Şifre</label>
+                        <input type="password" placeholder="Şifre" name="password" onChange={this.checkPasswordContent} required></input>
                         <div className="warning-message">{this.state.warning_messages['password']}</div>
 
-                        <label for="university">Universite</label>
-                        <input type="text" placeholder="Universite" name="university" required></input>
-                        <div className="warning-message">{}</div>
+                        <label for="university">Üniversite</label>
+                        <input type="text" placeholder="Üniversite" name="university" required></input>
+                        <div className="warning-message"></div>
     
                         <button className="register" type="submit">Kaydol</button>
                     </form>
                 </div>
                 <div className="back-to-home">
-                    <p>Ana sayfaya geri donmek icin <NavLink className="back-to-home-button" to="/">buraya</NavLink> tiklayabilirsin.</p>
+                    <p>Ana sayfaya geri dönmek için <NavLink className="back-to-home-button" to="/">buraya</NavLink> tıklayabilirsin.</p>
                 </div>
             </div>
         );
