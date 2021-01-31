@@ -1,6 +1,7 @@
 import React from 'react';
 import './RegisterForm.css';
 import {NavLink} from 'react-router-dom';
+import SuccessPage from './SuccessPage';
 import $ from 'jquery';
 
 class RegisterForm extends React.Component {
@@ -8,6 +9,8 @@ class RegisterForm extends React.Component {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
+            success: false, // If user successfully signs in, redirect to the success page
+            username: '', 
             signin_msg: '',
             warning_messages: {
                 'email' : '',
@@ -153,6 +156,11 @@ class RegisterForm extends React.Component {
             if (response.status === 201) {
                 const jsonResponse = await response.json();
                 msg = `Hesabin olusturuldu ${jsonResponse.username}!`;
+                this.setState({
+                    ...this.state,
+                    success: true,
+                    username: jsonResponse.username
+                })
             }
             else if (response.status === 400) {
                 msg = `Maalesef ${body.username} ismi alinmis, baska bir isim lazim!`;
@@ -161,10 +169,15 @@ class RegisterForm extends React.Component {
                 msg = 'Bir problem oldu!';
             }
             this.setState({signin_msg: msg});
+            
         });
     }
 
     render() {
+        // If succesful sign in occurs, show this page
+        if (this.state.success) {
+            return <SuccessPage username={this.state.username}/>
+        }
         return (
             <div>
                 <div className="header-container">
