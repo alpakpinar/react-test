@@ -12,13 +12,41 @@ class RegisterForm extends React.Component {
             warning_messages: {
                 'email' : '',
                 'password' : '',
+                'username' : '',
+                'university' : '',
             }
         };
 
         this.checkEmailContent = this.checkEmailContent.bind(this)
         this.checkPasswordContent = this.checkPasswordContent.bind(this)
         this.validatePassword = this.validatePassword.bind(this)
+        this.validateUsernameAndUniversity = this.validateUsernameAndUniversity.bind(this)
     }
+
+    validateUsernameAndUniversity(e) {
+        const username = $('input[name="username"]').val()
+        const university = $('input[name="university"]').val()
+        if (username === '') {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'username' : 'Bu alan zorunludur.'
+                }
+            })
+            return false
+        }
+        else if (university === '') {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'university' : 'Bu alan zorunludur.'
+                }
+            })
+            return false
+        }
+        return true
+    }
+
 
     checkEmailContent(e) {
         /*
@@ -97,11 +125,9 @@ class RegisterForm extends React.Component {
         /* Handle form submission. */
         e.preventDefault();
 
-        // Checks: Validate e-mail and password
-        if (!(this.validateEmail(e))) {
-            return
-        }
-        if (!(this.validatePassword(e))) {
+        // Checks: Validate inputs
+        const valid_form = this.validateEmail(e) && this.validatePassword(e) && this.validateUsernameAndUniversity(e)
+        if (!valid_form) {
             return
         }
 
@@ -149,20 +175,20 @@ class RegisterForm extends React.Component {
                     </div>
                     <form className="register-form" onSubmit={this.onSubmit}>
                         <label for="username">E-posta Adresi</label>
-                        <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent} required></input>
+                        <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent}></input>
                         <div className="warning-message">{this.state.warning_messages['email']}</div>
 
                         <label for="username">Kullanıcı Adı</label>
-                        <input type="text" placeholder="Kullanıcı adı" name="username" required></input>
-                        <div className="warning-message"></div>
+                        <input type="text" placeholder="Kullanıcı adı" name="username"></input>
+                        <div className="warning-message">{this.state.warning_messages['username']}</div>
     
                         <label for="password">Şifre</label>
-                        <input type="password" placeholder="Şifre" name="password" onChange={this.checkPasswordContent} required></input>
+                        <input type="password" placeholder="Şifre" name="password" onChange={this.checkPasswordContent}></input>
                         <div className="warning-message">{this.state.warning_messages['password']}</div>
 
                         <label for="university">Üniversite</label>
-                        <input type="text" placeholder="Üniversite" name="university" required></input>
-                        <div className="warning-message"></div>
+                        <input type="text" placeholder="Üniversite" name="university"></input>
+                        <div className="warning-message">{this.state.warning_messages['university']}</div>
     
                         <button className="register" type="submit">Kaydol</button>
                     </form>
