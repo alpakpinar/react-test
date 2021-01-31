@@ -8,13 +8,103 @@ class RegisterForm extends React.Component {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
-            signin_msg: ''
+            signin_msg: '',
+            warning_messages: {
+                'email' : '',
+                'password' : '',
+            }
         };
+
+        this.checkEmailContent = this.checkEmailContent.bind(this)
+        this.checkPasswordContent = this.checkPasswordContent.bind(this)
+        this.validatePassword = this.validatePassword.bind(this)
+    }
+
+    checkEmailContent(e) {
+        /*
+        If there is an existing warning message, and user enters a valid e-mail,
+        check the content and remove the warning message.
+        */
+        // Check for existing warning message
+        if (this.state.warning_messages['email'] === '') {
+            return
+        }
+
+        const email = $('input[name="user-email"]').val();
+        // Valid e-mail?
+        if (email.endsWith('edu.tr') && email.includes('@')) {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'email' : ''
+                }
+            })
+        }
+    }
+
+    validateEmail(e) {
+        /*
+        Validate input e-mail: Should have the following format
+        --> xxx@xxx.edu.tr
+        */
+        e.preventDefault()
+        const email = $('input[name="user-email"]').val()
+        if (!(email.endsWith('edu.tr') && email.includes('@'))) {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'email' : 'Lütfen geçerli bir e-mail adresi girin.'
+                }
+            })
+            return false
+        }
+        return true
+    }
+
+    checkPasswordContent(e) {
+        /*
+        Remove irrelevant warning message.
+        */
+        const password = $('input[name="password"]').val()
+        if (password.length >= 6) {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'password' : ''
+                }
+            })
+        }
+    }
+    validatePassword(e) {
+        /*
+        Validate password: Should have at least 6 characters
+        */
+        e.preventDefault()
+        const password = $('input[name="password"]').val()
+        if (password.length < 6) {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'password' : 'Şifre en az 6 karakterden oluşmalıdır.'
+                }
+            })
+            return false
+        }
+        return true
     }
 
     onSubmit(e) {
         /* Handle form submission. */
         e.preventDefault();
+
+        // Checks: Validate e-mail and password
+        if (!(this.validateEmail(e))) {
+            return
+        }
+        if (!(this.validatePassword(e))) {
+            return
+        }
+
         const ENDPOINT = '/api/users';
         
         const body = {
@@ -58,11 +148,21 @@ class RegisterForm extends React.Component {
                         <p className="success-text">{this.state.signin_msg}</p>
                     </div>
                     <form className="register-form" onSubmit={this.onSubmit}>
+                        <label for="username">E-posta</label>
+                        <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent} required></input>
+                        <div className="warning-message">{this.state.warning_messages['email']}</div>
+
                         <label for="username">Kullanici Adi</label>
                         <input type="text" placeholder="Kullanici adi" name="username" required></input>
+                        <div className="warning-message">{}</div>
     
                         <label for="password">Sifre</label>
-                        <input type="password" placeholder="Sifre" name="password" required></input>
+                        <input type="password" placeholder="Sifre" name="password" onChange={this.checkPasswordContent} required></input>
+                        <div className="warning-message">{this.state.warning_messages['password']}</div>
+
+                        <label for="university">Universite</label>
+                        <input type="text" placeholder="Universite" name="university" required></input>
+                        <div className="warning-message">{}</div>
     
                         <button className="register" type="submit">Kaydol</button>
                     </form>

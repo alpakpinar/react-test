@@ -50,6 +50,13 @@ p.success-text {
     font-size: 25px;
 }
 
+div.warning-message {
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-style: italic;
+    color: red;
+}
+
 div.back-to-home {
     text-align: center;
     font-size: 25px;
