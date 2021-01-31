@@ -134,8 +134,10 @@ class RegisterForm extends React.Component {
         const ENDPOINT = '/api/users';
         
         const body = {
+            email: $('input[name="user-email"]').val(),
             username: $('input[name="username"]').val(),
-            password: $('input[name="password"]').val()
+            password: $('input[name="password"]').val(),
+            university: $('input[name="university"]').val(),
         };
 
         fetch(ENDPOINT, {

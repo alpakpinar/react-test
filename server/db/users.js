@@ -21,10 +21,12 @@ async function getUserByName(username, client) {
     return result;
 }
 
-async function addUser(username, hashedPassword, client) {
+async function addUser(username, hashedPassword, email, university, client) {
     const newUser = {
         username: username,
         password: hashedPassword,
+        email: email,
+        university: university,
         contacts: [],
         chatgroups: []
     }
