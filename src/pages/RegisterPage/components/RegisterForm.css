@@ -1,9 +1,18 @@
-div.form-container {
+div.sign-in-main-container {
+    display: flex;
+    flex-direction: row;
+}
+
+div.sign-in-container {
+    flex: 0 0 50%;
+}
+
+div.register-form-container {
     margin-top: 2em;
     margin-bottom: 2em;
-    margin-left: 25em;
-    margin-right: 25em;
-    padding: 40px;
+    margin-left: 10em;
+    margin-right: 10em;
+    padding: 30px;
     border: 3px solid green;
     border-radius: 20px;
 }

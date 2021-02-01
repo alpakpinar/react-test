@@ -179,38 +179,41 @@ class RegisterForm extends React.Component {
             return <SuccessPage username={this.state.username}/>
         }
         return (
-            <div>
-                <div className="header-container">
-                    <h1 className="register-title">Kaydol!</h1>
-                    <p className="register-text">Merhaba, aşağıdaki alanları doldurarak kaydolabilirsin.</p> 
-                </div>
-                <div className="form-container">
-                    <div className="msg-div">
-                        <p className="success-text">{this.state.signin_msg}</p>
+            <div className="sign-in-main-container">
+                <div className="sign-in-container">
+                    <div className="header-container">
+                        <h1 className="register-title">Kaydol!</h1>
+                        <p className="register-text">Merhaba, aşağıdaki alanları doldurarak kaydolabilirsin.</p> 
                     </div>
-                    <form className="register-form" onSubmit={this.onSubmit}>
-                        <label for="username">E-posta Adresi</label>
-                        <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent}></input>
-                        <div className="warning-message">{this.state.warning_messages['email']}</div>
+                    <div className="register-form-container">
+                        <div className="msg-div">
+                            <p className="success-text">{this.state.signin_msg}</p>
+                        </div>
+                        <form className="register-form" onSubmit={this.onSubmit}>
+                            <label for="username">E-posta Adresi</label>
+                            <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent}></input>
+                            <div className="warning-message">{this.state.warning_messages['email']}</div>
 
-                        <label for="username">Kullanıcı Adı</label>
-                        <input type="text" placeholder="Kullanıcı adı" name="username"></input>
-                        <div className="warning-message">{this.state.warning_messages['username']}</div>
-    
-                        <label for="password">Şifre</label>
-                        <input type="password" placeholder="Şifre" name="password" onChange={this.checkPasswordContent}></input>
-                        <div className="warning-message">{this.state.warning_messages['password']}</div>
+                            <label for="username">Kullanıcı Adı</label>
+                            <input type="text" placeholder="Kullanıcı adı" name="username"></input>
+                            <div className="warning-message">{this.state.warning_messages['username']}</div>
+        
+                            <label for="password">Şifre</label>
+                            <input type="password" placeholder="Şifre" name="password" onChange={this.checkPasswordContent}></input>
+                            <div className="warning-message">{this.state.warning_messages['password']}</div>
 
-                        <label for="university">Üniversite</label>
-                        <input type="text" placeholder="Üniversite" name="university"></input>
-                        <div className="warning-message">{this.state.warning_messages['university']}</div>
-    
-                        <button className="register" type="submit">Kaydol</button>
-                    </form>
+                            <label for="university">Üniversite</label>
+                            <input type="text" placeholder="Üniversite" name="university"></input>
+                            <div className="warning-message">{this.state.warning_messages['university']}</div>
+        
+                            <button className="register" type="submit">Kaydol</button>
+                        </form>
+                    </div>
+                    <div className="back-to-home">
+                        <p>Ana sayfaya geri dönmek için <NavLink className="back-to-home-button" to="/">buraya</NavLink> tıklayabilirsin.</p>
+                    </div>
                 </div>
-                <div className="back-to-home">
-                    <p>Ana sayfaya geri dönmek için <NavLink className="back-to-home-button" to="/">buraya</NavLink> tıklayabilirsin.</p>
-                </div>
+                <div></div>
             </div>
         );
     }
