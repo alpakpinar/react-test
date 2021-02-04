@@ -3,6 +3,7 @@ import './HomePage.css';
 import Navigation from '../LandingPage/components/Navigation';
 import ChatRoom from './components/ChatRoom';
 import NewChatGroupForm from './components/NewChatGroupForm';
+import ProfileLandingPage from './components/ProfileLandingPage';
 import {Redirect} from 'react-router-dom';
 
 class HomePage extends React.Component {
@@ -157,7 +158,7 @@ class HomePage extends React.Component {
         const activeTabId = this.state.activeTabId;
         // Empty page if no tab is selected (initial default)
         if (activeTabId === null) {
-            return <></>
+            return <ProfileLandingPage />
         }
         // Chat rooms: Group chat rooms or DM message rooms
         else if (activeTabId.includes('room') || activeTabId.includes('dm')) {
