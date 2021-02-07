@@ -265,7 +265,7 @@ class HomePage extends React.Component {
                         <div className="main-room-header">
                             <h2>{this.getHeader(all_rooms)}</h2>
                             <div className="settings-div">
-                                <button className="fa fa-gear settings-dropdown-btn" onClick={this.showSettingsDropdown}></button>
+                                <button className="fa fa-ellipsis-v settings-dropdown-btn" onClick={this.showSettingsDropdown}></button>
                                 <div id="dropdown-menu" className="dropdown-content">
                                     <a onClick={null} href="#">Sohbet Geçmişini Temizle</a>
                                     <a onClick={null} href="#">Gruptan Ayrıl</a>
