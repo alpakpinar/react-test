@@ -2,7 +2,6 @@ import React from 'react'
 import './RegisterForm.css'
 import {NavLink} from 'react-router-dom'
 import SuccessPage from './SuccessPage'
-import DropdownForUniversities from './DropdownForUniversities'
 import $ from 'jquery'
 
 class RegisterForm extends React.Component {
