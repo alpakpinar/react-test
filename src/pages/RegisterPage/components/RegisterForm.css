@@ -1,12 +1,3 @@
-div.sign-in-main-container {
-    display: flex;
-    flex-direction: row;
-}
-
-div.sign-in-container {
-    flex: 0 0 50%;
-}
-
 div.register-form-container {
     margin-top: 2em;
     margin-bottom: 2em;

@@ -1,0 +1,7 @@
+div.flex-container {
+    position: flex;
+}
+
+div.register-form-div {
+    flex: 0 0 50%;
+}
