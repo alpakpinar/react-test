@@ -1,8 +1,9 @@
-import React from 'react';
-import './RegisterForm.css';
-import {NavLink} from 'react-router-dom';
-import SuccessPage from './SuccessPage';
-import $ from 'jquery';
+import React from 'react'
+import './RegisterForm.css'
+import {NavLink} from 'react-router-dom'
+import SuccessPage from './SuccessPage'
+import DropdownForUniversities from './DropdownForUniversities'
+import $ from 'jquery'
 
 class RegisterForm extends React.Component {
     constructor(props) {
@@ -17,13 +18,20 @@ class RegisterForm extends React.Component {
                 'password' : '',
                 'username' : '',
                 'university' : '',
+            },
+            university_dropdown: {
+                unilist: []
             }
         };
 
+        // Bind functions to the component class
         this.checkEmailContent = this.checkEmailContent.bind(this)
         this.checkPasswordContent = this.checkPasswordContent.bind(this)
         this.validatePassword = this.validatePassword.bind(this)
         this.validateUsernameAndUniversity = this.validateUsernameAndUniversity.bind(this)
+        this.validateNameAndUsername = this.validateNameAndUsername.bind(this)
+        this.universityDropdown = this.universityDropdown.bind(this)
+        this.setUniversity = this.setUniversity.bind(this)
     }
 
     validateUsernameAndUniversity(e) {
@@ -50,6 +58,29 @@ class RegisterForm extends React.Component {
         return true
     }
 
+    validateNameAndUsername(e) {
+        const name = $('input[name="name"]').val()
+        const surname = $('input[name="surname"]').val()
+        if (name === '') {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'name' : 'Bu alan zorunludur.'
+                }
+            })
+            return false
+        }
+        else if (surname === '') {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'surname' : 'Bu alan zorunludur.'
+                }
+            })
+            return false
+        }
+        return true
+    }
 
     checkEmailContent(e) {
         /*
@@ -124,12 +155,64 @@ class RegisterForm extends React.Component {
         return true
     }
 
+    setUniversity(e) {
+        /* Set the university input field accordingly if one of the options is selected. */
+        e.preventDefault()
+        $('input[name="university"]').val(e.target.text)
+        // Close the list
+        this.setState({
+            ...this.state,
+            university_dropdown: {
+                unilist: []
+            }
+        })
+        // Continue focusing on the input field
+        $('input[name="university"]').focus()
+    }
+
+    universityDropdown(e) {
+        /*
+        University dropdown menu based on user input.
+        */
+       
+        const universityVal = $('input[name="university"]').val()
+        
+        if (universityVal === '') {
+            this.setState({
+                ...this.state,
+                university_dropdown: {
+                    unilist: []
+                }
+            })
+            return
+        }
+
+        const universityList = [
+            'Boğaziçi Üniversitesi',
+            'Koç Üniversitesi',
+            'Bilgi Üniversitesi',
+        ]
+
+        // Possible university suggestions based on user input
+        const possibleUniversities = universityList.filter(university => {
+            return university.substr(0, universityVal.length).toUpperCase() == universityVal.toUpperCase()
+        })
+        
+        this.setState({
+            ...this.state,
+            university_dropdown: {
+                unilist: possibleUniversities
+            }
+        })
+
+    }
+
     onSubmit(e) {
         /* Handle form submission. */
         e.preventDefault();
 
         // Checks: Validate inputs
-        const valid_form = this.validateEmail(e) && this.validatePassword(e) && this.validateUsernameAndUniversity(e)
+        const valid_form = this.validateEmail(e) && this.validatePassword(e) && this.validateUsernameAndUniversity(e) && this.validateNameAndUsername(e)
         if (!valid_form) {
             return
         }
@@ -173,11 +256,21 @@ class RegisterForm extends React.Component {
         });
     }
 
+    componentDidMount() {
+        // Event listener for "university" input field
+        const universityInputField = document.getElementById('university-input')
+        universityInputField.addEventListener('keydown', function(event) {
+            // TBC here...
+        })
+    }
+
     render() {
         // If succesful sign in occurs, show this page
         if (this.state.success) {
             return <SuccessPage username={this.state.username}/>
         }
+
+
         return (
             <div className="sign-in-main-container">
                 <div className="sign-in-container">
@@ -190,12 +283,26 @@ class RegisterForm extends React.Component {
                             <p className="success-text">{this.state.signin_msg}</p>
                         </div>
                         <form className="register-form" onSubmit={this.onSubmit}>
+                            <div className="sign-in-name-surname-flex-container">
+                                <div className="sign-in-name-flex-child">
+                                    <label for="name">İsim</label>
+                                    <input type="text" className="sign-in-name-field" placeholder="İsim" name="name"></input>
+                                    <div className="warning-message">{this.state.warning_messages['name']}</div>
+                                </div>
+                                <div className="sign-in-dummy-flex-child"></div>
+                                <div className="sign-in-surname-flex-child">
+                                    <label for="surname">Soyisim </label>
+                                    <input type="text" className="sign-in-surname-field" placeholder="Soyisim" name="surname"></input>
+                                    <div className="warning-message">{this.state.warning_messages['surname']}</div>
+                                </div>
+                            </div>
+
                             <label for="username">E-posta Adresi</label>
                             <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent}></input>
                             <div className="warning-message">{this.state.warning_messages['email']}</div>
 
                             <label for="username">Kullanıcı Adı</label>
-                            <input type="text" placeholder="Kullanıcı adı" name="username"></input>
+                            <input type="text" placeholder="Kullanıcı adı" name="username" autoComplete="off"></input>
                             <div className="warning-message">{this.state.warning_messages['username']}</div>
         
                             <label for="password">Şifre</label>
@@ -203,7 +310,12 @@ class RegisterForm extends React.Component {
                             <div className="warning-message">{this.state.warning_messages['password']}</div>
 
                             <label for="university">Üniversite</label>
-                            <input type="text" placeholder="Üniversite" name="university"></input>
+                            <input type="text" placeholder="Üniversite" name="university" id="university-input" autoComplete="off" onChange={this.universityDropdown}></input>
+                            <div className="university-dropdown-menu">
+                                {this.state.university_dropdown.unilist.map(university => {
+                                    return <a onClick={this.setUniversity} className="university-suggestion-item">{university}</a>
+                                })}
+                            </div>
                             <div className="warning-message">{this.state.warning_messages['university']}</div>
         
                             <button className="register" type="submit">Kaydol</button>

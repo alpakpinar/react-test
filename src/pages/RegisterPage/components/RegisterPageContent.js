@@ -6,7 +6,12 @@ class RegisterPageContent extends React.Component {
         return (
             <div>
                 <div className="register-page-content-div">
-                    Cool content here
+                    <ul className="register-page-content-itemlist">
+                        <li className="register-page-content-item item-left">Sadece üniversiteler var</li>
+                        <li className="register-page-content-item item-right">Sadece edu.tr maili yeter</li>
+                        <li className="register-page-content-item item-left">Üniversiteler icin filtrelenmiş alan</li>
+                        <li className="register-page-content-item item-right">Ünivesitelere özel faydalar</li>
+                    </ul>
                 </div>
             </div>
         )
