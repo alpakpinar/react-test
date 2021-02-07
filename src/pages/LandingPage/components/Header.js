@@ -8,7 +8,7 @@ class Header extends React.Component {
         return (
             <div id="header">
                 <h1 className="greeting">Merhaba!</h1>
-                <p className="greeting">Kampuste Kal ile universitene her zaman ve her yerde bagli kal!</p>
+                <p className="greeting">Kampüste Kal ile üniversitene her zaman ve her yerde bağlı kal!</p>
                 <div className="register-login-button-container">
                     <NavLink className="home-nav-item" to="/register">
                         <button className="header-button" id="signin">
@@ -17,7 +17,7 @@ class Header extends React.Component {
                     </NavLink>
                     <NavLink className="home-nav-item" to="/login">
                         <button className="header-button" id="login-button">
-                            Giris Yap
+                            Giriş Yap
                         </button>
                     </NavLink>
                 </div>

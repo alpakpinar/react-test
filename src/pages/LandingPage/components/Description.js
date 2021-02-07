@@ -7,17 +7,17 @@ class Description extends React.Component {
         return (
             <div id="description">
                 <div id="sectionOne">
-                    <h2 className="sectionOne-title">Herkes icin yeni bir universite platformu</h2>
-                    <p className="desc">Kampuste Kal ile universiteden istedigin kisilerle iletisim kurabilir, 
-                    istedigin kisilerle bilgi paylasabilirsin.</p>
+                    <h2 className="sectionOne-title">Herkes için yeni bir üniversite platformu</h2>
+                    <p className="desc">Kampüste Kal ile universiteden istediğin kişilerle iletişim kurabilir, 
+                    istediğin kişilerle bilgi paylaşabilirsin.</p>
                 </div>
                 <div id="imageOne">
                     <img alt="" id="img1" src="Bosphorus_University.jpg"></img>
                 </div>
                 <div id="sectionTwo">
-                    <h2 className="sectionTwo-title">Konusma Gruplarina Katil</h2>
-                    <p className="desc">Ilgini ceken konusma gruplarina istek yolla ve kolayca katil.
-                    Guvenli bir sekilde konusma odalarinda universitenden insanlarla iletisim kur.</p>
+                    <h2 className="sectionTwo-title">Konuşma Gruplarına Katıl</h2>
+                    <p className="desc">İlgini çeken konuşma gruplarına istek yolla ve kolayca katıl.
+                    Güvenli bir şekilde konuşma odalarında üniversitenden insanlarla iletişim kur.</p>
                 </div>
             </div>
         );  

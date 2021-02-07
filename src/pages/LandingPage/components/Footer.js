@@ -8,10 +8,10 @@ class Footer extends React.Component {
             <div>
                 <footer id="footer-div">
                     <ul className="footer-items">
-                        <li><a href="/">Kampuste Kal</a></li>
+                        <li><a href="/">Kampüste Kal</a></li>
                         <li><a href="/">Podcastler</a></li>
                         <li><a href="/">Bloglar</a></li>
-                        <li><a href="/">Iletisim</a></li>
+                        <li><a href="/">İletişim</a></li>
                     </ul>
                 </footer>
             </div>

@@ -13,7 +13,7 @@ class Navigation extends React.Component {
     if (this.props.displayLogoutButton) {
       return (
         <div className="logout-button-container">
-        <button type="submit" className="logout-button" onClick={this.props.handleLogout}>Cikis Yap</button>
+        <button type="submit" className="logout-button" onClick={this.props.handleLogout}>Çıkış Yap</button>
         </div>
       )
     }
@@ -26,9 +26,9 @@ class Navigation extends React.Component {
       <div id="navigation">
         <nav>
           <ul className="nav-items">
-            <li className="nav-link"><NavLink className="nav-item" to="/">#KampusteKal</NavLink></li>
+            <li className="nav-link"><NavLink className="nav-item" to="/">#KampüsteKal</NavLink></li>
             <li className="nav-link"><NavLink className="nav-item" to="/">Blog</NavLink></li>
-            <li className="nav-link"><NavLink className="nav-item" to="/">Iletisim</NavLink></li>
+            <li className="nav-link"><NavLink className="nav-item" to="/">İletişim</NavLink></li>
           </ul>
         </nav>
         {this.displayLogout()}
