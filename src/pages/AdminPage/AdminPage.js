@@ -67,7 +67,7 @@ class AdminPage extends React.Component {
                     <p>Ana sayfaya donmek icin <NavLink to="/" className="back-to-home-button">buraya</NavLink> tikla!</p>
                 </div>
                 <div className="logout-admin">
-                    <button className="logout-button" onClick={this.handleLogout}>Cikis Yap</button>
+                    <button className="logout-button-admin" onClick={this.handleLogout}>Cikis Yap</button>
                 </div>
             </div>
         )
