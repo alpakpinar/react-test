@@ -1,7 +1,12 @@
 div.flex-container {
     position: flex;
+    flex-direction: row;
 }
 
 div.register-form-div {
     flex: 0 0 50%;
+}
+
+div.register-page-content-container {
+    flex: 0 0 45%;
 }
