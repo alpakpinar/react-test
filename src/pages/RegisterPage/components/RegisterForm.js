@@ -36,6 +36,7 @@ class RegisterForm extends React.Component {
         this.universityDropdown = this.universityDropdown.bind(this)
         this.setUniversity = this.setUniversity.bind(this)
         this.changeActiveUniTab = this.changeActiveUniTab.bind(this)
+        this.removeUniversityDropdown = this.removeUniversityDropdown.bind(this)
     }
 
     validateUsernameAndUniversity(e) {
@@ -175,6 +176,16 @@ class RegisterForm extends React.Component {
         $('input[name="university"]').focus()
     }
 
+    removeUniversityDropdown(e) {
+        this.setState({
+            ...this.state,
+            university_dropdown: {
+                unilist: [],
+                activeTab: -1
+            }
+        })
+    }
+
     universityDropdown(e) {
         /*
         University dropdown menu based on user input.
@@ -183,13 +194,7 @@ class RegisterForm extends React.Component {
         const universityVal = $('input[name="university"]').val()
         
         if (universityVal === '') {
-            this.setState({
-                ...this.state,
-                university_dropdown: {
-                    unilist: [],
-                    activeTab: -1
-                }
-            })
+            this.removeUniversityDropdown()
             return
         }
 
@@ -212,6 +217,55 @@ class RegisterForm extends React.Component {
             }
         })
 
+    }
+    
+    changeActiveUniTab(e) {
+        /* Change the active tab on the university dropdown list. */
+        const universityInputField = document.getElementById('university-input')
+        if (universityInputField.value === '') {
+            return
+        }
+        const currentActiveTab = this.state.university_dropdown.activeTab
+        const currentUniversityList = this.state.university_dropdown.unilist
+
+        if (e.key === 'Enter') {
+            // Do not submit the form because of the enter keypress lol
+            e.preventDefault()
+            const selectedUniversity = this.state.university_dropdown.unilist[this.state.university_dropdown.activeTab]
+            // Set the value of the input field based on the selected university
+            universityInputField.value = selectedUniversity
+            this.removeUniversityDropdown()
+            return
+        }
+
+        // Escape key
+        if (e.keyCode === 27) {
+            this.removeUniversityDropdown()
+            return
+        }
+
+        // Update the active tab ID, based on whether up or down key is pressed
+        // Up key
+        let newActiveTab
+        if (e.keyCode === 38) {
+            if (currentActiveTab < 0) {
+                return
+            }
+            newActiveTab = currentActiveTab - 1
+        }
+        // Down key
+        else if (e.keyCode === 40) {
+            newActiveTab = currentActiveTab + 1
+        }
+
+        // Update the state
+        this.setState({
+            ...this.state,
+            university_dropdown: {
+                unilist: currentUniversityList,
+                activeTab: newActiveTab,
+            }
+        })
     }
 
     onSubmit(e) {
@@ -261,67 +315,6 @@ class RegisterForm extends React.Component {
             this.setState({signin_msg: msg});
             
         });
-    }
-
-    changeActiveUniTab(e) {
-        /* Change the active tab on the university dropdown list. */
-        const universityInputField = document.getElementById('university-input')
-        if (universityInputField.value === '') {
-            return
-        }
-        const currentActiveTab = this.state.university_dropdown.activeTab
-        const currentUniversityList = this.state.university_dropdown.unilist
-
-        if (e.key === 'Enter') {
-            // Do not submit the form because of the enter keypress lol
-            e.preventDefault()
-            const selectedUniversity = this.state.university_dropdown.unilist[this.state.university_dropdown.activeTab]
-            // Set the value of the input field based on the selected university
-            universityInputField.value = selectedUniversity
-            this.setState({
-                ...this.state,
-                university_dropdown: {
-                    unilist: [],
-                    activeTab: -1,
-                }
-            })
-            return
-        }
-
-        // Escape key
-        if (e.keyCode === 27) {
-            this.setState({
-                ...this.state,
-                university_dropdown: {
-                    unilist: [],
-                    activeTab: -1,
-                }
-            })
-            return
-        }
-
-        // Update the active tab ID, based on whether up or down key is pressed
-        // Up key
-        let newActiveTab
-        if (e.keyCode === 38) {
-            if (currentActiveTab < 0) {
-                return
-            }
-            newActiveTab = currentActiveTab - 1
-        }
-        // Down key
-        else if (e.keyCode === 40) {
-            newActiveTab = currentActiveTab + 1
-        }
-
-        // Update the state
-        this.setState({
-            ...this.state,
-            university_dropdown: {
-                unilist: currentUniversityList,
-                activeTab: newActiveTab,
-            }
-        })
     }
 
     render() {
