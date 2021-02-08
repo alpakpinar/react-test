@@ -19,9 +19,13 @@ class RegisterForm extends React.Component {
                 'university' : '',
             },
             university_dropdown: {
-                unilist: []
+                unilist: [],
+                activeTab: -1
             }
         };
+
+        this.universityInputRef = React.createRef()
+        this.universityDropdownRef = React.createRef()
 
         // Bind functions to the component class
         this.checkEmailContent = this.checkEmailContent.bind(this)
@@ -31,6 +35,7 @@ class RegisterForm extends React.Component {
         this.validateNameAndUsername = this.validateNameAndUsername.bind(this)
         this.universityDropdown = this.universityDropdown.bind(this)
         this.setUniversity = this.setUniversity.bind(this)
+        this.changeActiveUniTab = this.changeActiveUniTab.bind(this)
     }
 
     validateUsernameAndUniversity(e) {
@@ -162,7 +167,8 @@ class RegisterForm extends React.Component {
         this.setState({
             ...this.state,
             university_dropdown: {
-                unilist: []
+                unilist: [],
+                activeTab: -1
             }
         })
         // Continue focusing on the input field
@@ -180,7 +186,8 @@ class RegisterForm extends React.Component {
             this.setState({
                 ...this.state,
                 university_dropdown: {
-                    unilist: []
+                    unilist: [],
+                    activeTab: -1
                 }
             })
             return
@@ -194,13 +201,14 @@ class RegisterForm extends React.Component {
 
         // Possible university suggestions based on user input
         const possibleUniversities = universityList.filter(university => {
-            return university.substr(0, universityVal.length).toUpperCase() == universityVal.toUpperCase()
+            return university.substr(0, universityVal.length).toUpperCase() === universityVal.toUpperCase()
         })
         
         this.setState({
             ...this.state,
             university_dropdown: {
-                unilist: possibleUniversities
+                unilist: possibleUniversities,
+                activeTab: -1
             }
         })
 
@@ -255,11 +263,64 @@ class RegisterForm extends React.Component {
         });
     }
 
-    componentDidMount() {
-        // Event listener for "university" input field
+    changeActiveUniTab(e) {
+        /* Change the active tab on the university dropdown list. */
         const universityInputField = document.getElementById('university-input')
-        universityInputField.addEventListener('keydown', function(event) {
-            // TBC here...
+        if (universityInputField.value === '') {
+            return
+        }
+        const currentActiveTab = this.state.university_dropdown.activeTab
+        const currentUniversityList = this.state.university_dropdown.unilist
+
+        if (e.key === 'Enter') {
+            // Do not submit the form because of the enter keypress lol
+            e.preventDefault()
+            const selectedUniversity = this.state.university_dropdown.unilist[this.state.university_dropdown.activeTab]
+            // Set the value of the input field based on the selected university
+            universityInputField.value = selectedUniversity
+            this.setState({
+                ...this.state,
+                university_dropdown: {
+                    unilist: [],
+                    activeTab: -1,
+                }
+            })
+            return
+        }
+
+        // Escape key
+        if (e.keyCode === 27) {
+            this.setState({
+                ...this.state,
+                university_dropdown: {
+                    unilist: [],
+                    activeTab: -1,
+                }
+            })
+            return
+        }
+
+        // Update the active tab ID, based on whether up or down key is pressed
+        // Up key
+        let newActiveTab
+        if (e.keyCode === 38) {
+            if (currentActiveTab < 0) {
+                return
+            }
+            newActiveTab = currentActiveTab - 1
+        }
+        // Down key
+        else if (e.keyCode === 40) {
+            newActiveTab = currentActiveTab + 1
+        }
+
+        // Update the state
+        this.setState({
+            ...this.state,
+            university_dropdown: {
+                unilist: currentUniversityList,
+                activeTab: newActiveTab,
+            }
         })
     }
 
@@ -268,7 +329,6 @@ class RegisterForm extends React.Component {
         if (this.state.success) {
             return <SuccessPage username={this.state.username}/>
         }
-
 
         return (
             <div className="sign-in-main-container">
@@ -309,10 +369,15 @@ class RegisterForm extends React.Component {
                             <div className="warning-message">{this.state.warning_messages['password']}</div>
 
                             <label for="university">Üniversite</label>
-                            <input type="text" placeholder="Üniversite" name="university" id="university-input" autoComplete="off" onChange={this.universityDropdown}></input>
-                            <div className="university-dropdown-menu">
-                                {this.state.university_dropdown.unilist.map(university => {
-                                    return <a onClick={this.setUniversity} className="university-suggestion-item">{university}</a>
+                            <input type="text" placeholder="Üniversite" name="university" id="university-input" autoComplete="off" onKeyDown={this.changeActiveUniTab} onChange={this.universityDropdown} ref={this.universityInputRef}></input>
+                            <div className="university-dropdown-menu" ref={this.universityDropdownRef}>
+                                {this.state.university_dropdown.unilist.map((university, index) => {
+                                    if (index === this.state.university_dropdown.activeTab) {
+                                        return <a onClick={this.setUniversity} className="university-suggestion-item university-item-active">{university}</a>
+                                    }
+                                    else {
+                                        return <a onClick={this.setUniversity} className="university-suggestion-item">{university}</a>
+                                    }
                                 })}
                             </div>
                             <div className="warning-message">{this.state.warning_messages['university']}</div>

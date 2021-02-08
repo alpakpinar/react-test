@@ -92,7 +92,9 @@ div.back-to-home {
 }
 
 div.university-dropdown-menu {
+    position: absolute;
     background-color: #dddada;
+    width: 20%;
 }
 
 a.university-suggestion-item {
@@ -107,4 +109,10 @@ a.university-suggestion-item {
 a.university-suggestion-item:hover {
     cursor: pointer;
     background-color: gray;
+    color: white;
+}
+
+a.university-item-active {
+    background-color: gray;
+    color: white;
 }
