@@ -229,6 +229,9 @@ class RegisterForm extends React.Component {
         const currentUniversityList = this.state.university_dropdown.unilist
 
         if (e.key === 'Enter') {
+            if (this.state.university_dropdown.unilist.length ===  0) {
+                return
+            }
             // Do not submit the form because of the enter keypress lol
             e.preventDefault()
             const selectedUniversity = this.state.university_dropdown.unilist[this.state.university_dropdown.activeTab]
@@ -281,6 +284,7 @@ class RegisterForm extends React.Component {
         const ENDPOINT = '/api/users';
         
         const body = {
+            name: $('input[name="name"]').val() + ' ' + $('input[name="surname"]').val(),
             email: $('input[name="user-email"]').val(),
             username: $('input[name="username"]').val(),
             password: $('input[name="password"]').val(),
