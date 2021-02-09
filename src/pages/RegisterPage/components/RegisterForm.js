@@ -38,6 +38,7 @@ class RegisterForm extends React.Component {
         this.setUniversity = this.setUniversity.bind(this)
         this.changeActiveUniTab = this.changeActiveUniTab.bind(this)
         this.removeUniversityDropdown = this.removeUniversityDropdown.bind(this)
+        this.removeCheckboxWarning = this.removeCheckboxWarning.bind(this)
     }
 
     validateUsernameAndUniversity(e) {
@@ -272,7 +273,7 @@ class RegisterForm extends React.Component {
         })
     }
 
-    checkIfSigninCheckboxIsChecked(e) {
+    checkIfSigninCheckboxIsChecked() {
         /* Check if the sign-in checkbox (user agreement) is checked */
         const boxChecked = this.signinCheckboxRef.current.checked
         if (!boxChecked) {
@@ -284,6 +285,21 @@ class RegisterForm extends React.Component {
             })
         }
         return boxChecked
+    }
+
+    removeCheckboxWarning() {
+        /* If checkbox is checked and the warning message is still there, remove it. */
+        const boxChecked = this.signinCheckboxRef.current.checked
+        const warningMessageExist = this.state.warning_messages['signinCheckbox'] !== ''
+        // Remove the now unneccessary warning message
+        if (boxChecked && warningMessageExist) {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'signinCheckbox' : ''
+                }
+            })
+        }
     }
 
     onSubmit(e) {
@@ -400,7 +416,7 @@ class RegisterForm extends React.Component {
                             <div className="warning-message">{this.state.warning_messages['university']}</div>
         
                             <div className="sign-in-checkbox-div">
-                                <input type="checkbox" name="sign-in-checkbox" ref={this.signinCheckboxRef}/>
+                                <input type="checkbox" name="sign-in-checkbox" ref={this.signinCheckboxRef} onChange={this.removeCheckboxWarning}/>
                                 <label for="sign-in-checkbox" className="sign-in-checkbox-text"><a href="#">Kullanıcı sözleşmesini</a> okudum ve kabul ediyorum.</label>
                                 <div className="warning-message">{this.state.warning_messages['signinCheckbox']}</div>
                             </div>
