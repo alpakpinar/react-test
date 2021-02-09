@@ -116,3 +116,23 @@ a.university-item-active {
     background-color: gray;
     color: white;
 }
+
+div.sign-in-checkbox-div {
+    margin: 5px 0;
+}
+
+label.sign-in-checkbox-text {
+    margin: 5px 0;
+}
+
+label.sign-in-checkbox-text a {
+    text-decoration: none;
+}
+
+label.sign-in-checkbox-text a:hover {
+    text-decoration: underline;
+}
+
+input.sign-in-checkbox {
+    cursor: pointer;
+}

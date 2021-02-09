@@ -26,6 +26,7 @@ class RegisterForm extends React.Component {
 
         this.universityInputRef = React.createRef()
         this.universityDropdownRef = React.createRef()
+        this.signinCheckboxRef = React.createRef()
 
         // Bind functions to the component class
         this.checkEmailContent = this.checkEmailContent.bind(this)
@@ -271,6 +272,20 @@ class RegisterForm extends React.Component {
         })
     }
 
+    checkIfSigninCheckboxIsChecked(e) {
+        /* Check if the sign-in checkbox (user agreement) is checked */
+        const boxChecked = this.signinCheckboxRef.current.checked
+        if (!boxChecked) {
+            this.setState({
+                ...this.state,
+                warning_messages: {
+                    'signinCheckbox' : 'Lütfen bu alanı doldurun.'
+                }
+            })
+        }
+        return boxChecked
+    }
+
     onSubmit(e) {
         /* Handle form submission. */
         e.preventDefault();
@@ -278,6 +293,11 @@ class RegisterForm extends React.Component {
         // Checks: Validate inputs
         const valid_form = this.validateEmail(e) && this.validatePassword(e) && this.validateUsernameAndUniversity(e) && this.validateNameAndUsername(e)
         if (!valid_form) {
+            return
+        }
+
+        // Check that the user indeed checked the sign-in agreement checkbox
+        if (!this.checkIfSigninCheckboxIsChecked(e)) {
             return
         }
 
@@ -379,11 +399,14 @@ class RegisterForm extends React.Component {
                             </div>
                             <div className="warning-message">{this.state.warning_messages['university']}</div>
         
+                            <div className="sign-in-checkbox-div">
+                                <input type="checkbox" name="sign-in-checkbox" ref={this.signinCheckboxRef}/>
+                                <label for="sign-in-checkbox" className="sign-in-checkbox-text"><a href="#">Kullanıcı sözleşmesini</a> okudum ve kabul ediyorum.</label>
+                                <div className="warning-message">{this.state.warning_messages['signinCheckbox']}</div>
+                            </div>
+
                             <button className="register" type="submit">Kaydol</button>
                         </form>
-                    </div>
-                    <div className="back-to-home">
-                        <p>Ana sayfaya geri dönmek için <NavLink className="back-to-home-button" to="/">buraya</NavLink> tıklayabilirsin.</p>
                     </div>
                 </div>
                 <div></div>
