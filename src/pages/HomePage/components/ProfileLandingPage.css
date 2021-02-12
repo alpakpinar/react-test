@@ -23,3 +23,35 @@ button.profile-landing-page-search-button:hover {
     cursor: pointer;
     opacity: 1;
 }
+
+/* Dropdown menu for search bar */
+
+div.chatroom-dropdown-menu {
+    position: absolute;
+    left: 50%;
+    background-color: #dddada;
+    width: 20%;
+    z-index: 99;
+    max-height: 200px;
+    overflow: auto;
+}
+
+a.chatroom-suggestion-item {
+    display: block;
+    color: black;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 2px;
+    margin: 3px;
+}
+
+a.chatroom-suggestion-item:hover {
+    cursor: pointer;
+    background-color: gray;
+    color: white;
+}
+
+a.chatroom-item-active {
+    background-color: gray;
+    color: white;
+}
