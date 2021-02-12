@@ -12,7 +12,7 @@ class Description extends React.Component {
                     istediğin kişilerle bilgi paylaşabilirsin.</p>
                 </div>
                 <div id="imageOne">
-                    <img alt="" id="img1" src="Bosphorus_University.jpg"></img>
+                    <img alt="" id="img1" src="KocUniversity.jpg"></img>
                 </div>
                 <div id="sectionTwo">
                     <h2 className="sectionTwo-title">Konuşma Gruplarına Katıl</h2>

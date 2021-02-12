@@ -8,6 +8,9 @@ class ProfileLandingPage extends React.Component {
     constructor(props) {
         super(props)
     }
+    componentDidMount() {
+        // Search and load the group list
+    }
     render() {
         return (
             <div>
