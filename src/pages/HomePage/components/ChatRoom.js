@@ -191,7 +191,7 @@ class ChatRoom extends React.Component {
                         >
                             {message.body}
                         </li>
-                        <span className="username-stamp">{message.senderUsername}, {new Date(message.date).toString().split(' ').slice(1,5).join(' ')}</span>
+                        <span className="username-stamp">{message.senderUsername}, {new Date(message.date).toString().split(' ').slice(4,5).join(' ')}</span>
                     </div>
                     )}
                 }
