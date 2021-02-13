@@ -229,7 +229,7 @@ class ChatRoom extends React.Component {
         return (
             <div className="chat-room-container">
                 {/* Chat section in the middle */}
-                <div className="chat-section-container">
+                <div className="chat-section-container" style={this.state.roomId.startsWith("c-room") ? {flex: "0 0 75%"} : {flex: "0 0 100%"}}>
                     <div className="messages-container">
                         <ol className="messages-list">
                             {this.renderMessages()}
@@ -253,7 +253,7 @@ class ChatRoom extends React.Component {
                 </div>
                 {/* Sidebar on the right hand side of the page */}
                 <div className="sidebar-right-container">
-                    {this.state.contacts ? <RightSidebar contacts={this.state.contacts} /> : <div></div>}
+                    {(this.state.contacts && this.state.roomId.startsWith("c-room")) ? <RightSidebar contacts={this.state.contacts} /> : <div></div>}
                 </div>
             </div>
         )

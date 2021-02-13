@@ -6,10 +6,6 @@ div.chat-room-container {
     margin: 0;
 }
 
-div.chat-section-container {
-    flex: 0 0 75%;
-}
-
 div.messages-container {
     min-height: 500px;
     height: 85%;

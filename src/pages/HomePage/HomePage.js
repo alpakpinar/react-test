@@ -163,7 +163,7 @@ class HomePage extends React.Component {
         /* Render main (central) side of the home page depending on the tab being selected. */
         const activeTabId = this.state.activeTabId;
         // Empty page if no tab is selected (initial default)
-        if (activeTabId === null) {
+        if (activeTabId === '') {
             return <ProfileLandingPage />
         }
         // Chat rooms: Group chat rooms or DM message rooms
