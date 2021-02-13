@@ -29,7 +29,7 @@ button.profile-landing-page-search-button:hover {
 div.chatroom-dropdown-menu {
     position: absolute;
     left: 50%;
-    background-color: #dddada;
+    background-color: #ececec;
     width: 20%;
     z-index: 99;
     max-height: 200px;
