@@ -1,6 +1,8 @@
-import React from 'react';
-import './LoginForm.css';
-import {NavLink} from 'react-router-dom';
+import React from 'react'
+import './LoginForm.css'
+import {NavLink} from 'react-router-dom'
+import Checkbox from '@material-ui/core/Checkbox'
+import Button from '@material-ui/core/Button'
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -100,9 +102,11 @@ class LoginForm extends React.Component {
                                </input>
     
                         <button className="register" type="submit">Giris Yap</button>
+                        {/* <Button variant="contained" color="primary" className="login-button">Giriş Yap</Button> */}
                     </form>
                     <div className="remember-me-checkbox-div">
-                        <input className="remember-me-checkbox" type="checkbox" onChange={e => this.setState({saveToLocalStorage: !this.state.saveToLocalStorage})}></input>
+                        <Checkbox color="primary" onChange={e => this.setState({saveToLocalStorage: !this.state.saveToLocalStorage})}></Checkbox>
+                        {/* <input className="remember-me-checkbox" type="checkbox" onChange={e => this.setState({saveToLocalStorage: !this.state.saveToLocalStorage})}></input> */}
                         <label>Beni hatirla</label>
                     </div>
                 </div>

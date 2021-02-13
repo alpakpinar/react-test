@@ -2,6 +2,8 @@ import React from 'react'
 import './RegisterForm.css'
 import {NavLink} from 'react-router-dom'
 import SuccessPage from './SuccessPage'
+import Checkbox from '@material-ui/core/Checkbox'
+import Button from '@material-ui/core/Button'
 import $ from 'jquery'
 
 class RegisterForm extends React.Component {
@@ -416,11 +418,12 @@ class RegisterForm extends React.Component {
                             <div className="warning-message">{this.state.warning_messages['university']}</div>
         
                             <div className="sign-in-checkbox-div">
-                                <input type="checkbox" name="sign-in-checkbox" ref={this.signinCheckboxRef} onChange={this.removeCheckboxWarning}/>
+                                <Checkbox name="sign-in-checkbox" ref={this.signinCheckboxRef} onChange={this.removeCheckboxWarning} color="primary"></Checkbox>
                                 <label for="sign-in-checkbox" className="sign-in-checkbox-text"><a href="#">Kullanıcı sözleşmesini</a> okudum ve kabul ediyorum.</label>
                                 <div className="warning-message">{this.state.warning_messages['signinCheckbox']}</div>
                             </div>
 
+                            {/* <Button className="register-button" size="large" variant="contained" color="primary">Kaydol</Button> */}
                             <button className="register" type="submit">Kaydol</button>
                         </form>
                     </div>

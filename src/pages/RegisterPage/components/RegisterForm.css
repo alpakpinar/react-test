@@ -38,6 +38,12 @@ input[type=text], input[type=password] {
     margin-bottom: 0;
 }
 
+.register-button {
+    padding: 14px 20px;
+    margin: 8px 0;
+    width: 100%;
+}
+
 button.register {
     background-color: #4CAF50;
     color: white;
