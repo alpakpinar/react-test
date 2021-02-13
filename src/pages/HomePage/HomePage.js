@@ -35,6 +35,7 @@ class HomePage extends React.Component {
         this.renderMainSide = this.renderMainSide.bind(this)
         this.handleExitGroup = this.handleExitGroup.bind(this)
         this.userLoggedIn = this.userLoggedIn.bind(this)
+        this.renderUsernameAndName = this.renderUsernameAndName.bind(this)
     }
     
     handleLogout(e) {
@@ -195,6 +196,25 @@ class HomePage extends React.Component {
         }
     }
 
+    renderUsernameAndName() {
+        /* Username and name on top left */
+        if (this.state.name) {
+            return (
+                <div className="username-container">
+                    <h3 className="username-content">@{this.state.username}</h3>
+                    <h3 className="username-content">{this.state.name}</h3>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div className="username-container">
+                    <h3 className="username-content">@{this.state.username}</h3>
+                </div>
+            )
+        }
+    }
+
     render() {
         // Login needed for access to this page
         // If we can't find the login token stored, redirect to login page
@@ -209,10 +229,7 @@ class HomePage extends React.Component {
                 <Navigation handleLogout={this.handleLogout} displayLogoutButton={true} />
                 <div className="flex-container">
                     <div className="home-sidebar">
-                        <div className="username-container">
-                            <h3 className="username-content">@{this.state.username}</h3>
-                            <h3 className="username-content">{this.state.name}</h3>
-                        </div>
+                        {this.renderUsernameAndName()}
                         <div className="chat-rooms-container">
                             <h3 className="room-header">Chat Odaları</h3>
                             <ul className="room-list">
