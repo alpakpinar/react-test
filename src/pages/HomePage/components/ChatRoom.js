@@ -3,6 +3,7 @@ import './ChatRoom.css';
 import './RightSidebar.css';
 import { io } from 'socket.io-client';
 // import { MessageBox } from 'react-chat-elements';
+import Avatar from '@material-ui/core/Avatar';
 
 const NEW_CHAT_MESSAGE_EVENT = 'new_chat_message';
 const USER_LEFT_EVENT = 'user_left';
@@ -19,7 +20,17 @@ class RightSidebar extends React.Component {
 
     renderContacts() {
         return this.props.contacts.map(contact => {
-            return <p className="contactInGroupItem">{contact.username}</p>
+            let username = contact.username
+            return (
+                <div className="right-sidebar-contact-item">
+                    <div className="right-sidebar-avatar-container">
+                        <Avatar>{username[0].toUpperCase()}</Avatar>
+                    </div>
+                    <div className="right-sidebar-username-container">
+                        <p>{username}</p>
+                    </div>
+                </div>
+            )
         })
     }
 
