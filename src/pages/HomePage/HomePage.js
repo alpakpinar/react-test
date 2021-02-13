@@ -1,10 +1,17 @@
-import React from 'react';
-import './HomePage.css';
-import Navigation from '../LandingPage/components/Navigation';
-import ChatRoom from './components/ChatRoom';
-import NewChatGroupForm from './components/NewChatGroupForm';
-import ProfileLandingPage from './components/ProfileLandingPage';
+import React from 'react'
+import './HomePage.css'
+import Navigation from '../LandingPage/components/Navigation'
+import ChatRoom from './components/ChatRoom'
+import NewChatGroupForm from './components/NewChatGroupForm'
+import ProfileLandingPage from './components/ProfileLandingPage'
+import UsernameContainer from './components/UsernameContainer'
 import {Redirect} from 'react-router-dom';
+
+import Button from '@material-ui/core/Button'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -28,14 +35,16 @@ class HomePage extends React.Component {
                 {roomId: "a-room-2", name: "# Ev/Yurt", type: "announcement"},
 
             ],
-            activeTabId: ''
+            activeTabId: '',
+            settingsMenu: false
         };
         this.isActiveTab = this.isActiveTab.bind(this)
         this.changeActiveTab = this.changeActiveTab.bind(this)
         this.renderMainSide = this.renderMainSide.bind(this)
         this.handleExitGroup = this.handleExitGroup.bind(this)
         this.userLoggedIn = this.userLoggedIn.bind(this)
-        this.renderUsernameAndName = this.renderUsernameAndName.bind(this)
+        this.handleSettingsMenuClose = this.handleSettingsMenuClose.bind(this)
+        this.showSettingsMenu = this.showSettingsMenu.bind(this)
     }
     
     handleLogout(e) {
@@ -196,23 +205,18 @@ class HomePage extends React.Component {
         }
     }
 
-    renderUsernameAndName() {
-        /* Username and name on top left */
-        if (this.state.name) {
-            return (
-                <div className="username-container">
-                    <h3 className="username-content">@{this.state.username}</h3>
-                    <h3 className="username-content">{this.state.name}</h3>
-                </div>
-            )
-        }
-        else {
-            return (
-                <div className="username-container">
-                    <h3 className="username-content">@{this.state.username}</h3>
-                </div>
-            )
-        }
+    showSettingsMenu(e) {
+        this.setState({
+            ...this.state,
+            settingsMenu: e.currentTarget
+        })
+    }
+
+    handleSettingsMenuClose() {
+        this.setState({
+            ...this.state,
+            settingsMenu: null
+        })
     }
 
     render() {
@@ -229,7 +233,7 @@ class HomePage extends React.Component {
                 <Navigation handleLogout={this.handleLogout} displayLogoutButton={true} />
                 <div className="flex-container">
                     <div className="home-sidebar">
-                        {this.renderUsernameAndName()}
+                        <UsernameContainer username={this.state.username} name={this.state.name} />
                         <div className="chat-rooms-container">
                             <h3 className="room-header">Chat Odaları</h3>
                             <ul className="room-list">
@@ -288,11 +292,17 @@ class HomePage extends React.Component {
                         <div className="main-room-header">
                             <h2>{this.getHeader(all_rooms)}</h2>
                             <div className="settings-div">
-                                <button className="fa fa-ellipsis-v settings-dropdown-btn" onClick={this.showSettingsDropdown}></button>
-                                <div id="dropdown-menu" className="dropdown-content">
-                                    <a onClick={null} href="#">Sohbet Geçmişini Temizle</a>
-                                    <a onClick={null} href="#">Gruptan Ayrıl</a>
-                                </div>
+                                <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.showSettingsMenu}><MoreVertIcon></MoreVertIcon></Button>
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={this.state.settingsMenu}
+                                    keepMounted
+                                    open={Boolean(this.state.settingsMenu)}
+                                    onClose={this.handleSettingsMenuClose}
+                                >
+                                    <MenuItem onClick={this.handleSettingsMenuClose}>Sohbet Geçmişini Temizle</MenuItem>
+                                    <MenuItem onClick={this.handleSettingsMenuClose}>Gruptan Ayrıl</MenuItem>
+                                </Menu>
                             </div>
                         </div>
                         {this.renderMainSide()}

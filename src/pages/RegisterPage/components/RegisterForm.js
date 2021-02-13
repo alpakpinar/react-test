@@ -4,6 +4,7 @@ import {NavLink} from 'react-router-dom'
 import SuccessPage from './SuccessPage'
 import Checkbox from '@material-ui/core/Checkbox'
 import Button from '@material-ui/core/Button'
+import Input from '@material-ui/core/Input'
 import $ from 'jquery'
 
 class RegisterForm extends React.Component {
@@ -391,7 +392,7 @@ class RegisterForm extends React.Component {
                                 </div>
                             </div>
 
-                            <label for="username">E-posta Adresi</label>
+                            <label for="user-email">E-posta Adresi</label>
                             <input type="text" placeholder="xxx@xxx.edu.tr" name="user-email" onChange={this.checkEmailContent}></input>
                             <div className="warning-message">{this.state.warning_messages['email']}</div>
 
