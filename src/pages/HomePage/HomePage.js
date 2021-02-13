@@ -1,17 +1,13 @@
 import React from 'react'
+import {Redirect} from 'react-router-dom';
 import './HomePage.css'
+
 import Navigation from '../LandingPage/components/Navigation'
 import ChatRoom from './components/ChatRoom'
 import NewChatGroupForm from './components/NewChatGroupForm'
 import ProfileLandingPage from './components/ProfileLandingPage'
 import UsernameContainer from './components/UsernameContainer'
-import {Redirect} from 'react-router-dom';
-
-import Button from '@material-ui/core/Button'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-
+import SettingsMenu from './components/SettingsMenu'
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -43,8 +39,6 @@ class HomePage extends React.Component {
         this.renderMainSide = this.renderMainSide.bind(this)
         this.handleExitGroup = this.handleExitGroup.bind(this)
         this.userLoggedIn = this.userLoggedIn.bind(this)
-        this.handleSettingsMenuClose = this.handleSettingsMenuClose.bind(this)
-        this.showSettingsMenu = this.showSettingsMenu.bind(this)
     }
     
     handleLogout(e) {
@@ -205,20 +199,6 @@ class HomePage extends React.Component {
         }
     }
 
-    showSettingsMenu(e) {
-        this.setState({
-            ...this.state,
-            settingsMenu: e.currentTarget
-        })
-    }
-
-    handleSettingsMenuClose() {
-        this.setState({
-            ...this.state,
-            settingsMenu: null
-        })
-    }
-
     render() {
         // Login needed for access to this page
         // If we can't find the login token stored, redirect to login page
@@ -291,19 +271,7 @@ class HomePage extends React.Component {
                     <div className="home-main">  
                         <div className="main-room-header">
                             <h2>{this.getHeader(all_rooms)}</h2>
-                            <div className="settings-div">
-                                <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.showSettingsMenu}><MoreVertIcon></MoreVertIcon></Button>
-                                <Menu
-                                    id="simple-menu"
-                                    anchorEl={this.state.settingsMenu}
-                                    keepMounted
-                                    open={Boolean(this.state.settingsMenu)}
-                                    onClose={this.handleSettingsMenuClose}
-                                >
-                                    <MenuItem onClick={this.handleSettingsMenuClose}>Sohbet Geçmişini Temizle</MenuItem>
-                                    <MenuItem onClick={this.handleSettingsMenuClose}>Gruptan Ayrıl</MenuItem>
-                                </Menu>
-                            </div>
+                            <SettingsMenu menu={this.state.settingsMenu}/>
                         </div>
                         {this.renderMainSide()}
                     </div>

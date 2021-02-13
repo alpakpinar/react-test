@@ -1,5 +1,7 @@
 import React from 'react'
 import './ProfileLandingPage.css'
+// import Input from '@material-ui/core/Input'
+// import TextField from '@material-ui/core/TextField'
 
 // TODO: Actual search functionality
 // (Probably) more aesthetics
