@@ -1,5 +1,6 @@
 import React from 'react';
 import './ChatRoom.css';
+import './RightSidebar.css';
 import { io } from 'socket.io-client';
 // import { MessageBox } from 'react-chat-elements';
 
@@ -8,6 +9,31 @@ const USER_LEFT_EVENT = 'user_left';
 const USER_TYPING_EVENT = 'user_typing';
 const USER_STOPPED_TYPING_EVENT = 'user_stopped_typing';
 const SOCKET_SERVER_URL = 'http://localhost:8080';
+
+class RightSidebar extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.renderContacts = this.renderContacts.bind(this)
+    }
+
+    renderContacts() {
+        return this.props.contacts.map(contact => {
+            return <p className="contactInGroupItem">{contact.username}</p>
+        })
+    }
+
+    render() {
+        return (
+            <div className="right-sidebar-container">
+                <div className="right-sidebar-header-container">
+                    <h2 className="right-sidebar-header">Kullanıcılar</h2>
+                </div>
+                <div className="right-sidebar-contact-list">{this.renderContacts()}</div>
+            </div>
+        )
+    }
+ }
 
 class ChatRoom extends React.Component {
     constructor(props) {
@@ -25,7 +51,7 @@ class ChatRoom extends React.Component {
         this.state.socket.emit('new_connection', this.props.username, this.state.socket.id, this.props.roomId)
 
         // Fetch messages from database and update the message list of the component state
-        this.fetchMessages(this.props.roomId)
+        this.fetchData(this.props.roomId)
 
         this.handleNewMessageChange = this.handleNewMessageChange.bind(this);
         this.handleSendMessage = this.handleSendMessage.bind(this);
@@ -34,8 +60,8 @@ class ChatRoom extends React.Component {
         this.scrollToBottom = this.scrollToBottom.bind(this);
     }
 
-    fetchMessages(roomId) {
-        /* Load in the messages for this chat group. */
+    fetchData(roomId) {
+        /* Load in the messages and contacts for this chat group. */
         fetch(`/api/chatrooms/${roomId}`, {
             method: 'GET'
         })
@@ -51,7 +77,8 @@ class ChatRoom extends React.Component {
             // If there is a room (ideally there should be) then get the messages and set the component state accordingly
             this.setState({
                 messagelist: jsonResponse.messagelist,
-                roomId: roomId
+                roomId: roomId,
+                contacts: jsonResponse.contacts
             })
         })
     }
@@ -69,7 +96,7 @@ class ChatRoom extends React.Component {
             this.state.socket.emit('new_connection', this.props.username, this.state.socket.id, newRoomId)
 
             // Fetch and update the messages being rendered for this specific room
-            this.fetchMessages(newRoomId)
+            this.fetchData(newRoomId)
         }
     }
 
@@ -201,26 +228,33 @@ class ChatRoom extends React.Component {
     render() {
         return (
             <div className="chat-room-container">
-                <div className="messages-container">
-                    <ol className="messages-list">
-                        {this.renderMessages()}
-                    </ol>
-                    <div ref={el => this.messagesEnd = el}>
+                {/* Chat section in the middle */}
+                <div className="chat-section-container">
+                    <div className="messages-container">
+                        <ol className="messages-list">
+                            {this.renderMessages()}
+                        </ol>
+                        <div ref={el => this.messagesEnd = el}>
+                        </div>
+                        <div className="user-typing-msg">
+                            <p><i>{this.state.userTypingMsg}</i></p>
+                        </div>
+                        <div className="user-joined-left-msg">
+                            <p><i>{this.state.userJoinedOrLeftMsg}</i></p>
+                        </div>
                     </div>
-                    <div className="user-typing-msg">
-                        <p><i>{this.state.userTypingMsg}</i></p>
-                    </div>
-                    <div className="user-joined-left-msg">
-                        <p><i>{this.state.userJoinedOrLeftMsg}</i></p>
-                    </div>
+                    <textarea
+                        value={this.state.current_message}
+                        onChange={this.handleNewMessageChange}
+                        placeholder="Write message..."
+                        className="new-message-input-field"
+                        onKeyDown={this.onKeyDown}
+                        />
                 </div>
-                <textarea
-                    value={this.state.current_message}
-                    onChange={this.handleNewMessageChange}
-                    placeholder="Write message..."
-                    className="new-message-input-field"
-                    onKeyDown={this.onKeyDown}
-                    />
+                {/* Sidebar on the right hand side of the page */}
+                <div className="sidebar-right-container">
+                    {this.state.contacts ? <RightSidebar contacts={this.state.contacts} /> : <div></div>}
+                </div>
             </div>
         )
     }

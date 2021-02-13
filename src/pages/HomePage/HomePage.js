@@ -27,13 +27,13 @@ class HomePage extends React.Component {
                 {roomId: "a-room-2", name: "# Ev/Yurt", type: "announcement"},
 
             ],
-            activeTabId: null
+            activeTabId: ''
         };
-        this.isActiveTab = this.isActiveTab.bind(this);
-        this.changeActiveTab = this.changeActiveTab.bind(this);
-        this.renderMainSide = this.renderMainSide.bind(this);
-        this.handleExitGroup = this.handleExitGroup.bind(this);
-        this.userLoggedIn = this.userLoggedIn.bind(this);
+        this.isActiveTab = this.isActiveTab.bind(this)
+        this.changeActiveTab = this.changeActiveTab.bind(this)
+        this.renderMainSide = this.renderMainSide.bind(this)
+        this.handleExitGroup = this.handleExitGroup.bind(this)
+        this.userLoggedIn = this.userLoggedIn.bind(this)
     }
     
     handleLogout(e) {
@@ -103,7 +103,7 @@ class HomePage extends React.Component {
     getHeader(all_rooms) {
         /* Get the appropriate header for the room we're displaying on the right hand side of the main screen */
         let header = null;
-        if (this.state.activeTabId === null) {
+        if (this.state.activeTabId === '') {
             header = ''
         }
         else if (this.state.activeTabId.includes('room')) {
@@ -147,6 +147,9 @@ class HomePage extends React.Component {
         */
         if (!e.target.matches('.settings-dropdown-btn')) {
             const dropdown_menu = document.getElementById('dropdown-menu')
+            if (!dropdown_menu) {
+                return
+            }
             if (dropdown_menu.classList.contains('dropdown-show')) {
                 dropdown_menu.classList.remove('dropdown-show')
             }
@@ -154,7 +157,7 @@ class HomePage extends React.Component {
     }
 
     renderMainSide() {
-        /* Render right side of the home page depending on the tab being selected. */
+        /* Render main (central) side of the home page depending on the tab being selected. */
         const activeTabId = this.state.activeTabId;
         // Empty page if no tab is selected (initial default)
         if (activeTabId === null) {
@@ -208,7 +211,7 @@ class HomePage extends React.Component {
                             <h2>{this.state.username}</h2>
                         </div>
                         <div className="chat-rooms-container">
-                            <h3 className="room-header">Chat Odalari</h3>
+                            <h3 className="room-header">Chat Odaları</h3>
                             <ul className="room-list">
                                 {this.state.chat_rooms.map((room => (
                                     <li id={room.roomId} 
@@ -230,7 +233,7 @@ class HomePage extends React.Component {
                             </ul>
                         </div>
                         <div className="announcement-rooms-container">
-                            <h3 className="room-header">Anons Odalari</h3>
+                            <h3 className="room-header">Anonslar</h3>
                             <ul className="room-list">
                                 {this.state.announcement_rooms.map(room => (
                                     <li id={room.roomId} 
@@ -261,7 +264,7 @@ class HomePage extends React.Component {
                             </ul>
                         </div>
                     </div>
-                    <div className="home-main">
+                    <div className="home-main">  
                         <div className="main-room-header">
                             <h2>{this.getHeader(all_rooms)}</h2>
                             <div className="settings-div">

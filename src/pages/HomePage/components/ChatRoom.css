@@ -1,11 +1,16 @@
 div.chat-room-container {
+    display: flex;
+    flex-direction: row;
     height: 90%;
     width: 100%;
     margin: 0;
 }
 
+div.chat-section-container {
+    flex: 0 0 75%;
+}
+
 div.messages-container {
-    flex: 1;
     min-height: 500px;
     height: 85%;
     overflow: auto;
@@ -86,5 +91,18 @@ div.button-div {
     display: inline;
     float: right;
     margin-bottom: 10px;
+}
+
+/* Right sidebar */
+
+div.sidebar-right-container {
+    flex: 0 0 25%;
+    background-color: #f1f1f1;
+}
+
+div.sidebar-right-header {
+    background-color: #949494;
+    padding: 1px 10px;
+    min-height: 69px;
 }
 
