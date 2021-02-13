@@ -35,8 +35,9 @@ apiRouter.get('/users', async (req, res) => {
 });
 
 apiRouter.post('/users', async (req, res) => {
-    const username = req.body.username;
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const name = req.body.name
+    const username = req.body.username
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
     const email = req.body.email
     const university = req.body.university
 
@@ -45,7 +46,7 @@ apiRouter.post('/users', async (req, res) => {
     }
 
     try {
-        const result = await users.addUser(username, hashedPassword, email, university, client);
+        const result = await users.addUser(name, username, hashedPassword, email, university, client);
         if (result) {
             if (result === 'Username taken') {
                 res.status(400).send();

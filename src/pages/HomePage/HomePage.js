@@ -20,6 +20,7 @@ class HomePage extends React.Component {
         
         this.state = {
             username: username,
+            name: '',
             chat_rooms: [], // Initially empty, to be fetched from the database and updated as page loads
             contacts: [], // Initially empty, to be fetched from the database and updated as page loads
             announcement_rooms: [
@@ -130,7 +131,8 @@ class HomePage extends React.Component {
         .then(jsonResponse => {
             this.setState({
                 chat_rooms: jsonResponse.chatgroups,
-                contacts: jsonResponse.contacts
+                contacts: jsonResponse.contacts,
+                name: jsonResponse.name ? jsonResponse.name : ''
             })
         })
 
@@ -208,7 +210,8 @@ class HomePage extends React.Component {
                 <div className="flex-container">
                     <div className="home-sidebar">
                         <div className="username-container">
-                            <h2>{this.state.username}</h2>
+                            <h3 className="username-content">@{this.state.username}</h3>
+                            <h3 className="username-content">{this.state.name}</h3>
                         </div>
                         <div className="chat-rooms-container">
                             <h3 className="room-header">Chat Odaları</h3>

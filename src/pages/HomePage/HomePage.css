@@ -39,11 +39,18 @@ div.username-container {
     background-color: #949494;
     padding: 1px 10px;
     margin: 0;
-    color: white;
+    min-height: 69px;
+    /* border: 3px solid black; */
 }
 
 div.username-container h2 {
     cursor: pointer;
+}
+
+div.username-container h3.username-content {
+    font-size: 20px;
+    margin: 5px;
+    color: white;
 }
 
 h3.room-header {
