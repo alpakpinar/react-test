@@ -32,7 +32,6 @@ class HomePage extends React.Component {
 
             ],
             activeTabId: '',
-            settingsMenu: false
         };
         this.isActiveTab = this.isActiveTab.bind(this)
         this.changeActiveTab = this.changeActiveTab.bind(this)
@@ -271,7 +270,7 @@ class HomePage extends React.Component {
                     <div className="home-main">  
                         <div className="main-room-header">
                             <h2>{this.getHeader(all_rooms)}</h2>
-                            <SettingsMenu menu={this.state.settingsMenu}/>
+                            <SettingsMenu />
                         </div>
                         {this.renderMainSide()}
                     </div>
