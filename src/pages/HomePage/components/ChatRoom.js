@@ -3,48 +3,13 @@ import './ChatRoom.css';
 import './RightSidebar.css';
 import { io } from 'socket.io-client';
 // import { MessageBox } from 'react-chat-elements';
-import Avatar from '@material-ui/core/Avatar';
+import RightSidebar from './RightSidebar'
 
 const NEW_CHAT_MESSAGE_EVENT = 'new_chat_message';
 const USER_LEFT_EVENT = 'user_left';
 const USER_TYPING_EVENT = 'user_typing';
 const USER_STOPPED_TYPING_EVENT = 'user_stopped_typing';
 const SOCKET_SERVER_URL = 'http://localhost:8080';
-
-class RightSidebar extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.renderContacts = this.renderContacts.bind(this)
-    }
-
-    renderContacts() {
-        return this.props.contacts.map(contact => {
-            let username = contact.username
-            return (
-                <div className="right-sidebar-contact-item">
-                    <div className="right-sidebar-avatar-container">
-                        <Avatar>{username[0].toUpperCase()}</Avatar>
-                    </div>
-                    <div className="right-sidebar-username-container">
-                        <p>{username}</p>
-                    </div>
-                </div>
-            )
-        })
-    }
-
-    render() {
-        return (
-            <div className="right-sidebar-container">
-                <div className="right-sidebar-header-container">
-                    <h2 className="right-sidebar-header">Kullanıcılar</h2>
-                </div>
-                <div className="right-sidebar-contact-list">{this.renderContacts()}</div>
-            </div>
-        )
-    }
- }
 
 class ChatRoom extends React.Component {
     constructor(props) {
