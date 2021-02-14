@@ -46,7 +46,7 @@ class NestedList extends React.Component {
                     {this.props.items.map(item => {
                         return (
                             <div id={item.roomId}>
-                                <ListItem button style={{"padding-left": "35px"}} onClick={this.handleClick}>
+                                <ListItem button selected={item.roomId === this.props.activeTabId} style={{"padding-left": "35px"}} onClick={this.handleClick}>
                                     {this.props.type === 'chatroom' ? <ListItemIcon><QuestionAnswerIcon /></ListItemIcon> : <></>}
                                     <ListItemText id={item.roomId} primary={this.props.type === 'contact' ? item.username : item.name} />
                                 </ListItem>
@@ -129,7 +129,7 @@ class LeftNavigation extends React.Component {
                         <ListItemText primary="Chat Odaları" />
                         {this.state.nests.chatroomsOpen ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <NestedList show={this.state.nests.chatroomsOpen} items={this.props.chatrooms} type="chatroom" setActiveTab={this.props.setActiveTab} /> 
+                    <NestedList show={this.state.nests.chatroomsOpen} items={this.props.chatrooms} type="chatroom" setActiveTab={this.props.setActiveTab} activeTabId={this.props.activeTabId} /> 
                     <ListItem button onClick={this.handleClickAnnouncements}>
                         <ListItemIcon>
                             <AnnouncementIcon></AnnouncementIcon>
@@ -373,7 +373,13 @@ class HomePage extends React.Component {
                 <div className="flex-container">
                     <div className="home-sidebar">
                         <UsernameContainer username={this.state.username} name={this.state.name} />
-                        <LeftNavigation chatrooms={this.state.chat_rooms} announcement_rooms={this.state.announcement_rooms} contacts={this.state.contacts} setActiveTab={this.setActiveTab} />
+                        <LeftNavigation 
+                            chatrooms={this.state.chat_rooms} 
+                            announcement_rooms={this.state.announcement_rooms} 
+                            contacts={this.state.contacts} 
+                            setActiveTab={this.setActiveTab} 
+                            activeTabId={this.state.activeTabId}
+                            />
                     </div>
                     <div className="home-main">  
                         <div className="main-room-header">
