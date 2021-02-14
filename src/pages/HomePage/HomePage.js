@@ -10,24 +10,33 @@ import UsernameContainer from './components/UsernameContainer'
 import SettingsMenu from './components/SettingsMenu'
 
 import List from '@material-ui/core/List'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse'
 
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import ChatIcon from '@material-ui/icons/Chat'
 import AnnouncementIcon from '@material-ui/icons/Announcement'
 import ContactsIcon from '@material-ui/icons/Contacts'
 import SearchIcon from '@material-ui/icons/Search'
+import AddIcon from '@material-ui/icons/Add'
+import CreateIcon from '@material-ui/icons/Create'
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer'
 
 class NestedList extends React.Component {
     /* Reusable nested/collapsable list for left-hand side navigation bar. */
     constructor(props) {
         super(props)
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    handleClick(e) {
+        // const groupname = e.target.textContent
+        const parent = e.target.parentElement
+        this.props.setActiveTab(parent.id)
     }
 
     render() {
@@ -35,11 +44,13 @@ class NestedList extends React.Component {
             <Collapse in={this.props.show}>
                 <List component="div">
                     {this.props.items.map(item => {
-                        console.log(item)
                         return (
-                            <ListItem button>
-                                <ListItemText primary={this.props.contact ? item.username : item.name} />
-                            </ListItem>
+                            <div id={item.roomId}>
+                                <ListItem button style={{"padding-left": "35px"}} onClick={this.handleClick}>
+                                    {this.props.type === 'chatroom' ? <ListItemIcon><QuestionAnswerIcon /></ListItemIcon> : <></>}
+                                    <ListItemText id={item.roomId} primary={this.props.type === 'contact' ? item.username : item.name} />
+                                </ListItem>
+                            </div>
                         )
                     })}
                 </List>
@@ -48,12 +59,12 @@ class NestedList extends React.Component {
     }
 }
 
-class RoomNavigation extends React.Component {
+class LeftNavigation extends React.Component {
     /* Navigation on the left hand side of the user page. */
     constructor(props) {
         super(props)
         this.state = {
-            selectedIndex: -1,
+            activeTabId: -1,
             nests: {
                 chatroomsOpen: true,
                 announcementsOpen: true,
@@ -64,6 +75,14 @@ class RoomNavigation extends React.Component {
         this.handleClickChatrooms = this.handleClickChatrooms.bind(this)
         this.handleClickAnnouncements = this.handleClickAnnouncements.bind(this)
         this.handleClickContacts = this.handleClickContacts.bind(this)
+        this.setActiveTab = this.setActiveTab.bind(this)
+    }
+
+    setActiveTab(selectedTabId) {
+        this.setState({
+            ...this.state,
+            activeTabId: selectedTabId
+        })
     }
 
     handleClickChatrooms() {
@@ -103,35 +122,48 @@ class RoomNavigation extends React.Component {
         return (
             <div>
                 <List component="nav">
-                    <ListItem button selected={this.state.selectedIndex === 0} onClick={this.handleClickChatrooms}>
+                    <ListItem button onClick={this.handleClickChatrooms}>
                         <ListItemIcon>
                             <ChatIcon></ChatIcon>
                         </ListItemIcon>
                         <ListItemText primary="Chat Odaları" />
                         {this.state.nests.chatroomsOpen ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <NestedList show={this.state.nests.chatroomsOpen} items={this.props.chatrooms} contact={false} /> 
-                    <ListItem button selected={this.state.selectedIndex === 1} onClick={this.handleClickAnnouncements}>
+                    <NestedList show={this.state.nests.chatroomsOpen} items={this.props.chatrooms} type="chatroom" setActiveTab={this.props.setActiveTab} /> 
+                    <ListItem button onClick={this.handleClickAnnouncements}>
                         <ListItemIcon>
                             <AnnouncementIcon></AnnouncementIcon>
                         </ListItemIcon>
                         <ListItemText primary="Anonslar" />
                         {this.state.nests.announcementsOpen ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <NestedList show={this.state.nests.announcementsOpen} items={this.props.announcement_rooms} contact={false} /> 
-                    <ListItem button selected={this.state.selectedIndex === 2} onClick={this.handleClickContacts}>
+                    <NestedList show={this.state.nests.announcementsOpen} items={this.props.announcement_rooms} type="announcement" setActiveTab={this.props.setActiveTab} /> 
+                    <ListItem button onClick={this.handleClickContacts}>
                         <ListItemIcon>
                             <ContactsIcon></ContactsIcon>
                         </ListItemIcon>
                         <ListItemText primary="Arkadaşlar" />
                         {this.state.nests.contactsOpen ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
-                    <NestedList show={this.state.nests.contactsOpen} items={this.props.contacts} contact={true}/> 
+                    <NestedList show={this.state.nests.contactsOpen} items={this.props.contacts} type="contact" setActiveTab={this.props.setActiveTab} /> 
+                    <Divider />
                     <ListItem button onClick={null}>
                         <ListItemIcon>
                             <SearchIcon></SearchIcon>
                         </ListItemIcon>
                         <ListItemText primary="Keşfet" />
+                    </ListItem>
+                    <ListItem button onClick={null}>
+                        <ListItemIcon>
+                            <CreateIcon></CreateIcon>
+                        </ListItemIcon>
+                        <ListItemText primary="Yeni Grup Oluştur" />
+                    </ListItem>
+                    <ListItem button onClick={null}>
+                        <ListItemIcon>
+                            <AddIcon></AddIcon>
+                        </ListItemIcon>
+                        <ListItemText primary="Yeni Arkadaş Ekle" />
                     </ListItem>
                 </List>
             </div>
@@ -164,7 +196,7 @@ class HomePage extends React.Component {
             activeTabId: '',
         };
         this.isActiveTab = this.isActiveTab.bind(this)
-        this.changeActiveTab = this.changeActiveTab.bind(this)
+        this.setActiveTab = this.setActiveTab.bind(this)
         this.renderMainSide = this.renderMainSide.bind(this)
         this.handleExitGroup = this.handleExitGroup.bind(this)
         this.userLoggedIn = this.userLoggedIn.bind(this)
@@ -223,10 +255,8 @@ class HomePage extends React.Component {
         return this.state.activeTabId === tabId;
     }
 
-    changeActiveTab(e) {
-        e.preventDefault();
-        const tabId = e.target.id;
-        this.setState({activeTabId: tabId});
+    setActiveTab(tabid) {
+        this.setState({activeTabId: tabid});
     }
 
     showSettingsDropdown(e) {
@@ -343,60 +373,7 @@ class HomePage extends React.Component {
                 <div className="flex-container">
                     <div className="home-sidebar">
                         <UsernameContainer username={this.state.username} name={this.state.name} />
-                        <div className="chat-rooms-container">
-                            <RoomNavigation chatrooms={this.state.chat_rooms} announcement_rooms={this.state.announcement_rooms} contacts={this.state.contacts}/>
-                            <h3 className="room-header">Chat Odaları</h3>
-                            <ul className="room-list">
-                                {this.state.chat_rooms.map((room => (
-                                    <li id={room.roomId} 
-                                    onClick={this.changeActiveTab} 
-                                    className={`room-item ${this.isActiveTab(room.roomId) ? "active" : ""}`}>
-                                        {room.name}
-                                        <div className="chat-close-button-container">
-                                            <a className="chat-close-button" id={room.roomId} onClick={this.handleExitGroup}></a>
-                                            <span className="chat-close-button-tooltip">Gruptan Ayrıl</span>
-                                        </div>
-                                    </li>
-                                )))}
-                                <li 
-                                id="new-chat-group" 
-                                className="new-room-item"
-                                onClick={this.changeActiveTab}>
-                                    Yeni oda yarat
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="announcement-rooms-container">
-                            <h3 className="room-header">Anonslar</h3>
-                            <ul className="room-list">
-                                {this.state.announcement_rooms.map(room => (
-                                    <li id={room.roomId} 
-                                    onClick={this.changeActiveTab} 
-                                    className={`room-item ${this.isActiveTab(room.roomId) ? "active" : ""}`}>
-                                        {room.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="contacts-container">
-                            <h3 className="room-header">Arkadaslar</h3>
-                            <ul className="contact-list">
-                                {this.state.contacts.map(contact => (
-                                    <li id={contact.roomId}
-                                    onClick={this.changeActiveTab}
-                                    className={`room-item ${this.isActiveTab(contact.roomId) ? "active" : ""}`}
-                                    >
-                                        <i className="fa fa-comments username-logo"></i>{contact.username}
-                                    </li>
-                                ))}
-                                <li
-                                id="new-contact"
-                                className="new-room-item"
-                                >
-                                    Yeni arkadas ekle
-                                </li>
-                            </ul>
-                        </div>
+                        <LeftNavigation chatrooms={this.state.chat_rooms} announcement_rooms={this.state.announcement_rooms} contacts={this.state.contacts} setActiveTab={this.setActiveTab} />
                     </div>
                     <div className="home-main">  
                         <div className="main-room-header">
