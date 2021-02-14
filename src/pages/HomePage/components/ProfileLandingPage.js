@@ -1,10 +1,27 @@
 import React from 'react'
 import './ProfileLandingPage.css'
-// import Input from '@material-ui/core/Input'
-// import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 
-// TODO: Actual search functionality
-// (Probably) more aesthetics
+class SearchBar extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+
+    render() {
+        return (
+            <div className="search-area-container">
+                <Autocomplete 
+                     options={this.props.chatrooms}
+                     getOptionLabel={(chatroom) => chatroom.name}
+                     style={{ width: 600 }}
+                     renderInput={(params) => <TextField {...params} label="Topluluk ara" variant="outlined"/>}
+                /> 
+            </div>
+        )
+    }
+}
 
 class ProfileLandingPage extends React.Component {
     constructor(props) {
@@ -139,19 +156,10 @@ class ProfileLandingPage extends React.Component {
             <div>
                 <div className="search-bar-container">
                     <h1>Topluluk keşfet</h1>
-                    <input className="profile-landing-page-search-bar" placeholder="Topluluk ara" ref={this.searchbar} onChange={this.chatRoomDropdown} onKeyDown={this.changeActiveChatRoomOnKeystreak} />
-                    <div className="chatroom-dropdown-menu">
-                        {this.state.dropdown.chatroomlist.map((chatroom, index) => {
-                            if (index === this.state.dropdown.activeTabId) {
-                                return <a onClick={this.setChatRoom} className="chatroom-suggestion-item chatroom-item-active">{chatroom.name}</a>
-                            }
-                            else {
-                                return <a onClick={this.setChatRoom} className="chatroom-suggestion-item">{chatroom.name}</a>
-                            }
-                        })}
-                    </div>
+                    {/* <input className="profile-landing-page-search-bar" placeholder="Topluluk ara" ref={this.searchbar} onChange={this.chatRoomDropdown} onKeyDown={this.changeActiveChatRoomOnKeystreak} /> */}
+                    <SearchBar chatrooms={this.state.chatrooms}/>
                     <br></br>
-                    <button type="submit" className="profile-landing-page-search-button">Ara</button>
+                    <Button variant="contained" color="primary" style={{width: "150px", 'font-size': "20px"}}>Ara</Button>
                 </div>
             </div>
         )
