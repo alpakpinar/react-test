@@ -34,7 +34,7 @@ class NestedList extends React.Component {
     }
 
     handleClick(e) {
-        // const groupname = e.target.textContent
+        // Get the parent div element, and extract the ID from it
         const parent = e.target.parentElement
         this.props.setActiveTab(parent.id)
     }
