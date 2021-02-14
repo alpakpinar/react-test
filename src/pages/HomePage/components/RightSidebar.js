@@ -8,9 +8,26 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import ListSubheader from '@material-ui/core/ListSubheader'
 
 class UserMenu extends React.Component {
     render() {
+        function isUppercase(s) {
+            return s === s.toUpperCase()
+        }
+
+        let username
+        
+        if (this.props.anchorForMenu) {
+            username = this.props.anchorForMenu.textContent
+            // Some pre-processing here...
+            if ((username.length > 1) && (isUppercase(username[0]))) {
+                username = username.slice(1)
+            }
+            else if (username.length === 1) {
+                username = ''
+            }
+        }
         return (
             <div>
                 <Menu
@@ -19,6 +36,7 @@ class UserMenu extends React.Component {
                     open={Boolean(this.props.anchorForMenu)}
                     onClose={this.props.handleClose}
                 >
+                    <ListSubheader component="div">{this.props.anchorForMenu ? '@' + username : ''}</ListSubheader>
                     <MenuItem onClick={this.props.handleClose}>Direkt mesaj yolla</MenuItem>
                     <MenuItem onClick={this.props.handleClose}>Kullanıcıyı ekle</MenuItem>
                 </Menu>
