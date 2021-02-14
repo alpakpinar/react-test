@@ -225,8 +225,8 @@ class HomePage extends React.Component {
             chat_rooms: [], // Initially empty, to be fetched from the database and updated as page loads
             contacts: [], // Initially empty, to be fetched from the database and updated as page loads
             announcement_rooms: [
-                {roomId: "a-room-1", name: "# Staj", type: "announcement"},
-                {roomId: "a-room-2", name: "# Ev/Yurt", type: "announcement"},
+                {roomId: "a-room-1", name: "Staj", type: "announcement"},
+                {roomId: "a-room-2", name: "Ev/Yurt", type: "announcement"},
 
             ],
             activeTabId: 'group-search',
