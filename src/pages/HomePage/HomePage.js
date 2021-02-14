@@ -25,12 +25,15 @@ import SearchIcon from '@material-ui/icons/Search'
 import AddIcon from '@material-ui/icons/Add'
 import CreateIcon from '@material-ui/icons/Create'
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer'
+import PersonIcon from '@material-ui/icons/Person'
+import AddAlertIcon from '@material-ui/icons/AddAlert'
 
 class NestedList extends React.Component {
     /* Reusable nested/collapsable list for left-hand side navigation bar. */
     constructor(props) {
         super(props)
         this.handleClick = this.handleClick.bind(this)
+        this.renderIcon = this.renderIcon.bind(this)
     }
 
     handleClick(e) {
@@ -38,6 +41,18 @@ class NestedList extends React.Component {
         const parent = e.target.parentElement
         this.props.setActiveTab(parent.id)
     }
+
+    renderIcon() {
+        if (this.props.type === 'chatroom') {
+            return <QuestionAnswerIcon></QuestionAnswerIcon>
+        }
+        else if (this.props.type === 'contact') {
+            return <PersonIcon></PersonIcon>
+        }
+        else if (this.props.type === 'announcement') {
+            return <AddAlertIcon></AddAlertIcon>
+        }
+     }
 
     render() {
         return (
@@ -47,7 +62,7 @@ class NestedList extends React.Component {
                         return (
                             <div id={item.roomId}>
                                 <ListItem button selected={item.roomId === this.props.activeTabId} style={{"padding-left": "35px"}} onClick={this.handleClick}>
-                                    {this.props.type === 'chatroom' ? <ListItemIcon><QuestionAnswerIcon /></ListItemIcon> : <></>}
+                                    <ListItemIcon>{this.renderIcon()}</ListItemIcon>
                                     <ListItemText id={item.roomId} primary={this.props.type === 'contact' ? item.username : item.name} />
                                 </ListItem>
                             </div>
