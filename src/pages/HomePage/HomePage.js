@@ -76,6 +76,9 @@ class LeftNavigation extends React.Component {
         this.handleClickAnnouncements = this.handleClickAnnouncements.bind(this)
         this.handleClickContacts = this.handleClickContacts.bind(this)
         this.setActiveTab = this.setActiveTab.bind(this)
+        this.handleClickNewGroup = this.handleClickNewGroup.bind(this)
+        this.handleClickGroupSearch = this.handleClickGroupSearch.bind(this)
+
     }
 
     setActiveTab(selectedTabId) {
@@ -118,6 +121,24 @@ class LeftNavigation extends React.Component {
         })
     }
 
+    handleClickNewGroup() {
+        const id = "new-group-form"
+        this.props.setActiveTab(id)
+        this.setState({
+            ...this.state,
+            activeTabId: id
+        })
+    }
+
+    handleClickGroupSearch() {
+        const id = "group-search"
+        this.props.setActiveTab(id)
+        this.setState({
+            ...this.state,
+            activeTabId: id
+        })
+    }
+
     render() {
         return (
             <div>
@@ -147,13 +168,13 @@ class LeftNavigation extends React.Component {
                     </ListItem>
                     <NestedList show={this.state.nests.contactsOpen} items={this.props.contacts} type="contact" setActiveTab={this.props.setActiveTab} /> 
                     <Divider />
-                    <ListItem button onClick={null}>
+                    <ListItem button onClick={this.handleClickGroupSearch} selected={this.state.activeTabId === "group-search"}>
                         <ListItemIcon>
                             <SearchIcon></SearchIcon>
                         </ListItemIcon>
                         <ListItemText primary="Keşfet" />
                     </ListItem>
-                    <ListItem button onClick={null}>
+                    <ListItem button onClick={this.handleClickNewGroup} selected={this.state.activeTabId === "new-group-form"} >
                         <ListItemIcon>
                             <CreateIcon></CreateIcon>
                         </ListItemIcon>
@@ -193,7 +214,7 @@ class HomePage extends React.Component {
                 {roomId: "a-room-2", name: "# Ev/Yurt", type: "announcement"},
 
             ],
-            activeTabId: '',
+            activeTabId: 'group-search',
         };
         this.isActiveTab = this.isActiveTab.bind(this)
         this.setActiveTab = this.setActiveTab.bind(this)
@@ -267,7 +288,7 @@ class HomePage extends React.Component {
     getHeader(all_rooms) {
         /* Get the appropriate header for the room we're displaying on the right hand side of the main screen */
         let header = null;
-        if (this.state.activeTabId === '') {
+        if (this.state.activeTabId === '' || this.state.activeTabId === 'group-search') {
             header = ''
         }
         else if (this.state.activeTabId.includes('room')) {
@@ -325,7 +346,7 @@ class HomePage extends React.Component {
         /* Render main (central) side of the home page depending on the tab being selected. */
         const activeTabId = this.state.activeTabId;
         // Empty page if no tab is selected (initial default)
-        if (activeTabId === '') {
+        if (activeTabId === 'group-search') {
             return <ProfileLandingPage />
         }
         // Chat rooms: Group chat rooms or DM message rooms
