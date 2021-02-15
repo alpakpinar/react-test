@@ -5,6 +5,7 @@ import './HomePage.css'
 import Navigation from '../LandingPage/components/Navigation'
 import ChatRoom from './components/ChatRoom'
 import NewChatGroupForm from './components/NewChatGroupForm'
+import NewChatGroupDialog from './components/NewChatGroupDialog'
 import ProfileLandingPage from './components/ProfileLandingPage'
 import UsernameContainer from './components/UsernameContainer'
 import SettingsMenu from './components/SettingsMenu'
@@ -79,7 +80,7 @@ class LeftNavigation extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            activeTabId: -1,
+            activeTabId: this.props.activeTabId,
             nests: {
                 chatroomsOpen: true,
                 announcementsOpen: true,
@@ -222,6 +223,7 @@ class HomePage extends React.Component {
         this.state = {
             username: username,
             name: '',
+            university: '',
             chat_rooms: [], // Initially empty, to be fetched from the database and updated as page loads
             contacts: [], // Initially empty, to be fetched from the database and updated as page loads
             announcement_rooms: [
@@ -314,12 +316,13 @@ class HomePage extends React.Component {
             header = this.state.contacts.find(contact => contact.roomId === this.state.activeTabId).username
         }
         else { 
-            header = 'Yeni Grup Olustur'
+            header = 'Yeni Grup Oluştur'
         }
         return header
     }
 
     componentDidMount() {
+        /* Collect the necessary data about the user: Full name, university, list of chat rooms etc. */
         fetch(`/api/users/${this.state.username}`, {
             method: 'GET',
             headers: {
@@ -331,7 +334,8 @@ class HomePage extends React.Component {
             this.setState({
                 chat_rooms: jsonResponse.chatgroups,
                 contacts: jsonResponse.contacts,
-                name: jsonResponse.name ? jsonResponse.name : ''
+                name: jsonResponse.name ? jsonResponse.name : '',
+                university: jsonResponse.university ? jsonResponse.university : ''
             })
         })
 
@@ -389,7 +393,7 @@ class HomePage extends React.Component {
                 newRoomId = "c-room-1"
             }
             return (
-                <NewChatGroupForm username={this.state.username} contacts={this.state.contacts} newRoomId={newRoomId}/>
+                <NewChatGroupDialog show={true} setActiveTab={this.setActiveTab} />
             )
         }
     }

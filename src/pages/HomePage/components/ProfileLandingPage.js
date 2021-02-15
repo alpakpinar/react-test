@@ -12,7 +12,8 @@ class SearchBar extends React.Component {
     render() {
         return (
             <div className="search-area-container">
-                <Autocomplete 
+                <Autocomplete
+                     id="group-search-box" 
                      options={this.props.chatrooms}
                      getOptionLabel={(chatroom) => chatroom.name}
                      style={{ width: 600 }}
