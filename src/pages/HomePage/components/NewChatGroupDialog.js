@@ -118,6 +118,7 @@ class RoomNameStep extends React.Component {
         super(props)
         this.state = {
             groupName: "",
+            error: false
         }
         this.handleChange = this.handleChange.bind(this)
     }
@@ -136,9 +137,21 @@ class RoomNameStep extends React.Component {
             <div style={{marginBottom: "20px"}}>
                 <h2>Şimdi grubuna bir isim bulalım</h2>
                 <p>Grubunun ismini aşağıya yazabilirsin:</p>
-                <TextField label="Grup ismi" autoComplete="off" id="group-name-text-field" onChange={this.handleChange} /> 
+                {this.props.err ? <TextField 
+                                    error
+                                    helperText="Lütfen bir grup ismi girin."
+                                    label="Grup ismi" 
+                                    autoComplete="off" 
+                                    id="group-name-text-field" 
+                                    value={this.props.currentGroupname} 
+                                    onChange={this.handleChange} /> : <TextField label="Grup ismi" 
+                                                                                autoComplete="off" 
+                                                                                id="group-name-text-field" 
+                                                                                value={this.props.currentGroupname} 
+                                                                                onChange={this.handleChange} /> }
+                
                 <br></br><br></br>
-                <TextField label="Üniversite" helperText="Bu odaya sadece bu üniversitelilerden bağlantılar katılabilir." autoComplete="off" id="group-name-text-field" disabled value={this.props.universityOfUser} />
+                <TextField label="Üniversite" helperText="Bu odaya sadece bu üniversiteden bağlantılar katılabilir." autoComplete="off" id="group-name-text-field" disabled value={this.props.universityOfUser} />
             </div>
         )
     }
@@ -149,6 +162,10 @@ class NewChatGroupFormStepper extends React.Component {
         super(props)
         this.state = {
             activeStep: 0,
+            groupType: "Kulüp",
+            groupName: "",
+            university: this.props.universityOfUser,
+            contacts: [],
             err: -1
         }
 
@@ -160,21 +177,37 @@ class NewChatGroupFormStepper extends React.Component {
         
         this.handleBack = this.handleBack.bind(this)
         this.handleNext = this.handleNext.bind(this)
-        this.checkNonEmptyGroupName = this.checkNonEmptyGroupName.bind(this)
+        this.setGroupType = this.setGroupType.bind(this)
+        this.setGroupName = this.setGroupName.bind(this)
     }
     
     getStepContent(step) {
         switch(step) {
             case 0:
-                return <RoomThemeStep setGroupType={this.props.setGroupType} />
+                return <RoomThemeStep setGroupType={this.setGroupType} />
             case 1:
-                return <RoomNameStep setGroupName={this.props.setGroupName} 
+                return <RoomNameStep setGroupName={this.setGroupName} 
                                      universityOfUser={this.props.universityOfUser}
-                                     checkNonEmptyGroupName={this.checkNonEmptyGroupName} 
-                                     err={this.state.err === 1} />
+                                     currentGroupname={this.state.groupName}
+                                     err={this.state.err === 1} 
+                                     />
             case 2:
                 return <div></div>
         }
+    }
+
+    setGroupType(dataFromChild) {
+        this.setState({
+            ...this.state,
+            groupType: dataFromChild
+        })
+    }
+
+    setGroupName(dataFromChild) {
+        this.setState({
+            ...this.state,
+            groupName: dataFromChild
+        })
     }
 
     handleBack() {
@@ -183,35 +216,37 @@ class NewChatGroupFormStepper extends React.Component {
         })
     }
 
-    checkNonEmptyGroupName(e) {
-        // Check that the group name is not empty
-        if (e.key === 'Enter') {
-            const valid = e.target.value !== ''
-            if (valid) {
+    handleNext(e) {
+        // For group name step, check that it is non-empty
+        if (this.state.activeStep === 1) {
+            const validData = this.state.groupName.trim() !== ''
+            if (!validData) {
+                // Set error on index 1
                 this.setState({
                     ...this.state,
-                    activeStep: this.state.activeStep + 1
-                })
-            }
-            else {
-                // Set error on the group name (second) step (i.e. index 1)
-                this.setState({
-                    activeStep: this.state.activeStep,
                     err: 1
                 })
+                return
             }
         }
-        return
-    }
-
-    handleNext(e) {
         this.setState({
             ...this.state,
             activeStep: this.state.activeStep + 1
         })
     }
 
+    removeErrorOnGroupname() {
+        // Once the group name field is filled again, remove the unnecessary error
+        if (this.state.err === 1 && this.state.groupName !== '') {
+            this.setState({
+                ...this.state,
+                err: -1
+            })
+        }
+    }
+
     render() {
+        console.log(this.state)
         return (
             <div>
                 <Stepper activeStep={this.state.activeStep}>
@@ -254,8 +289,6 @@ class NewChatGroupDialog extends React.Component {
             groupName: null,
         }
         this.handleClose = this.handleClose.bind(this)
-        this.setGroupType = this.setGroupType.bind(this)
-        this.setGroupName = this.setGroupName.bind(this)
     }
 
     handleClose() {
@@ -265,22 +298,7 @@ class NewChatGroupDialog extends React.Component {
         this.props.setActiveTab('')
     }
 
-    setGroupType(dataFromChild) {
-        this.setState({
-            ...this.state,
-            groupType: dataFromChild
-        })
-    }
-
-    setGroupName(dataFromChild) {
-        this.setState({
-            ...this.state,
-            groupName: dataFromChild
-        })
-    }
-
     render() {
-        console.log(this.state)
         return (
             <div>
                 <Dialog open={this.state.show} onClose={this.handleClose}>
