@@ -297,11 +297,6 @@ class HomePage extends React.Component {
         this.setState({activeTabId: tabid});
     }
 
-    showSettingsDropdown(e) {
-        e.preventDefault()
-        document.getElementById('dropdown-menu').classList.toggle('dropdown-show')
-    }
-
     getHeader(all_rooms) {
         /* Get the appropriate header for the room we're displaying on the right hand side of the main screen */
         let header = null;
@@ -409,7 +404,6 @@ class HomePage extends React.Component {
 
         return (
             <div className="home-container">
-                <Navigation handleLogout={this.handleLogout} displayLogoutButton={true} />
                 <div className="flex-container">
                     <div className="home-sidebar">
                         <UsernameContainer username={this.state.username} name={this.state.name} />
@@ -424,7 +418,7 @@ class HomePage extends React.Component {
                     <div className="home-main">  
                         <div className="main-room-header">
                             <h2>{this.getHeader(all_rooms)}</h2>
-                            <SettingsMenu />
+                            <SettingsMenu handleLogout={this.handleLogout}/>
                         </div>
                         {this.renderMainSide()}
                     </div>

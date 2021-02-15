@@ -43,6 +43,7 @@ class SettingsMenu extends React.Component {
                 >
                     <MenuItem onClick={this.handleSettingsMenuClose}>Sohbet Geçmişini Temizle</MenuItem>
                     <MenuItem onClick={this.handleSettingsMenuClose}>Gruptan Ayrıl</MenuItem>
+                    <MenuItem onClick={this.props.handleLogout}>Çıkış Yap</MenuItem>
                 </Menu>
             </div>
 
