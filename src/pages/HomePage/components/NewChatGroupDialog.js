@@ -1,5 +1,4 @@
 import React from 'react'
-import $ from 'jquery'
 
 import './NewChatGroupDialog.css'
 
@@ -52,7 +51,7 @@ class RoomTheme extends React.Component {
     }
 }
 
-class FirstStep extends React.Component {
+class RoomThemeStep extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -114,12 +113,11 @@ class FirstStep extends React.Component {
     }
 }
 
-class SecondStep extends React.Component {
+class RoomNameStep extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             groupName: "",
-            errorfixed: false
         }
         this.handleChange = this.handleChange.bind(this)
     }
@@ -138,19 +136,9 @@ class SecondStep extends React.Component {
             <div style={{marginBottom: "20px"}}>
                 <h2>Şimdi grubuna bir isim bulalım</h2>
                 <p>Grubunun ismini aşağıya yazabilirsin:</p>
-                    {(this.props.err && !(this.state.errorfixed)) ? <TextField 
-                                            id="group-name-text-field"
-                                            label="Grup ismi" 
-                                            autoComplete="off"
-                                            error 
-                                            helperText="Lütfen bir grup ismi girin."
-                                            onChange={this.handleChange}
-                                            /> : <TextField 
-                                                    label="Grup ismi"
-                                                    autoComplete="off"
-                                                    id="group-name-text-field" 
-                                                    onChange={this.handleChange}
-                                                    />}
+                <TextField label="Grup ismi" autoComplete="off" id="group-name-text-field" onChange={this.handleChange} /> 
+                <br></br><br></br>
+                <TextField label="Üniversite" helperText="Bu odaya sadece bu üniversitelilerden bağlantılar katılabilir." autoComplete="off" id="group-name-text-field" disabled value={this.props.universityOfUser} />
             </div>
         )
     }
@@ -178,11 +166,12 @@ class NewChatGroupFormStepper extends React.Component {
     getStepContent(step) {
         switch(step) {
             case 0:
-                return <FirstStep setGroupType={this.props.setGroupType} />
+                return <RoomThemeStep setGroupType={this.props.setGroupType} />
             case 1:
-                return <SecondStep setGroupName={this.props.setGroupName} 
-                                    checkNonEmptyGroupName={this.checkNonEmptyGroupName} 
-                                    err={this.state.err === 1} />
+                return <RoomNameStep setGroupName={this.props.setGroupName} 
+                                     universityOfUser={this.props.universityOfUser}
+                                     checkNonEmptyGroupName={this.checkNonEmptyGroupName} 
+                                     err={this.state.err === 1} />
             case 2:
                 return <div></div>
         }
@@ -297,7 +286,7 @@ class NewChatGroupDialog extends React.Component {
                 <Dialog open={this.state.show} onClose={this.handleClose}>
                     <DialogTitle id="form-dialog-title">Yeni Grup Oluştur</DialogTitle>
                     <DialogContent>
-                        <NewChatGroupFormStepper setGroupType={this.setGroupType} setGroupName={this.setGroupName} />
+                        <NewChatGroupFormStepper setGroupType={this.setGroupType} setGroupName={this.setGroupName} universityOfUser={this.props.universityOfUser} />
                     </DialogContent>
                     <IconButton onClick={this.handleClose} id="new-group-form-dialog-close-button">
                         <CloseIcon></CloseIcon>

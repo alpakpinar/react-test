@@ -393,7 +393,7 @@ class HomePage extends React.Component {
                 newRoomId = "c-room-1"
             }
             return (
-                <NewChatGroupDialog show={true} setActiveTab={this.setActiveTab} />
+                <NewChatGroupDialog show={true} setActiveTab={this.setActiveTab} universityOfUser={this.state.university} />
             )
         }
     }
