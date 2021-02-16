@@ -25,7 +25,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
 import Divider from '@material-ui/core/Divider'
-import Tooltip from '@material-ui/core/Tooltip'
 
 import LaptopChromebookIcon from '@material-ui/icons/LaptopChromebook'
 import GroupIcon from '@material-ui/icons/Group'
@@ -90,11 +89,9 @@ class ContactTheme extends React.Component {
                     <ListItemText>
                         {this.props.contact.username}
                     </ListItemText>
-                    <Tooltip arrow placement="right" title={this.state.added ? "Çıkar" : "Ekle"}>
-                        <IconButton onClick={this.handleClick}>
-                            {this.state.added ? <CheckCircleIcon /> : <AddIcon />}
-                        </IconButton>
-                    </Tooltip>
+                    <IconButton onClick={this.handleClick}>
+                        {this.state.added ? <CheckCircleIcon /> : <AddIcon />}
+                    </IconButton>
                     <Divider />
                 </ListItem>
             </div>
