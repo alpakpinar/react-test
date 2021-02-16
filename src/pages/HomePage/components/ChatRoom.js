@@ -229,7 +229,9 @@ class ChatRoom extends React.Component {
                 </div>
                 {/* Sidebar on the right hand side of the page */}
                 <div className="sidebar-right-container">
-                    {(this.state.contacts && this.state.roomId.startsWith("c-room")) ? <RightSidebar contacts={this.state.contacts} /> : <div></div>}
+                    {(this.state.contacts && this.state.roomId.startsWith("c-room")) ? 
+                                <RightSidebar contacts={this.state.contacts} username={this.props.username} /> 
+                                : <div></div>}
                 </div>
             </div>
         )

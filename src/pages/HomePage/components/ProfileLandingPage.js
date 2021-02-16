@@ -3,6 +3,7 @@ import './ProfileLandingPage.css'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+import Typography from '@material-ui/core/Typography'
 
 class SearchBar extends React.Component {
     constructor(props) {
@@ -156,8 +157,8 @@ class ProfileLandingPage extends React.Component {
         return (
             <div>
                 <div className="search-bar-container">
-                    <h1>Topluluk keşfet</h1>
-                    {/* <input className="profile-landing-page-search-bar" placeholder="Topluluk ara" ref={this.searchbar} onChange={this.chatRoomDropdown} onKeyDown={this.changeActiveChatRoomOnKeystreak} /> */}
+                    {/* <h1 style={{marginTop: "50px"}}>Topluluk keşfet</h1> */}
+                    <Typography variant="h4" style={{margin: "30px"}}>Topluluk keşfet</Typography>
                     <SearchBar chatrooms={this.state.chatrooms}/>
                     <br></br>
                     <Button variant="contained" color="primary" style={{width: "150px", 'font-size': "20px"}}>Ara</Button>

@@ -23,6 +23,9 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
+import Avatar from '@material-ui/core/Avatar'
+import Divider from '@material-ui/core/Divider'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import LaptopChromebookIcon from '@material-ui/icons/LaptopChromebook'
 import GroupIcon from '@material-ui/icons/Group'
@@ -30,13 +33,11 @@ import SportsSoccerIcon from '@material-ui/icons/SportsSoccer'
 import EventIcon from '@material-ui/icons/Event'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
-import { ThreeSixty } from '@material-ui/icons'
+import AddIcon from '@material-ui/icons/Add'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 
 class RoomTheme extends React.Component {
     /* Re-usable room theme for different room types. */
-    constructor(props) {
-        super(props)
-    }
     render() {
         return (
             <div>
@@ -45,6 +46,56 @@ class RoomTheme extends React.Component {
                         {this.props.icon}
                     </ListItemIcon>
                     <ListItemText><strong>{this.props.label}:</strong> {this.props.desc}</ListItemText>
+                </ListItem>
+            </div>
+        )
+    }
+}
+
+class ContactTheme extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            added: false
+        }
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    handleClick() {
+        const newContact = this.props.contact
+        const contactData = {
+            username: newContact.username,
+            _id: newContact._id
+        }
+        // Add (or remove) the contact in the parent component's state
+        if (!this.state.added) {
+            this.props.addContact(contactData)
+        }
+        else {
+            this.props.removeContact(contactData)
+        }
+        // Set this component's state
+        this.setState({
+            added: !(this.state.added)
+        })
+    }
+
+    render() {
+        return (
+            <div>
+                <ListItem>
+                    <ListItemIcon>
+                        <Avatar>{this.props.contact.username[0].toUpperCase()}</Avatar>
+                    </ListItemIcon>
+                    <ListItemText>
+                        {this.props.contact.username}
+                    </ListItemText>
+                    <Tooltip arrow placement="right" title={this.state.added ? "Çıkar" : "Ekle"}>
+                        <IconButton onClick={this.handleClick}>
+                            {this.state.added ? <CheckCircleIcon /> : <AddIcon />}
+                        </IconButton>
+                    </Tooltip>
+                    <Divider />
                 </ListItem>
             </div>
         )
@@ -88,7 +139,7 @@ class RoomThemeStep extends React.Component {
             "Gündem" : {
                 icon: <EventIcon></EventIcon>,
                 label: "Gündem",
-                desc: "En yeni gelişmelerin tartılıştığı oda."
+                desc: "En yeni gelişmelerin tartışıldığı oda."
             },
         }
         const theme = mapping[roomtheme]
@@ -157,6 +208,55 @@ class RoomNameStep extends React.Component {
     }
 }
 
+class ContactsStep extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            addedContacts: []
+        }
+        this.addContact = this.addContact.bind(this)
+        this.removeContact = this.removeContact.bind(this)
+    }
+
+    addContact(newContact) {
+        let contacts = this.state.addedContacts
+        contacts.push(newContact)
+        this.setState({
+            addedContacts: contacts
+        })
+        // Set contact list of the parent
+        this.props.setContactList(contacts)
+    }
+
+    removeContact(contact) {
+        let contacts = this.state.addedContacts
+        // Find the index of the contact to be removed
+        const indexToRemove = contacts.indexOf(contact)
+        contacts.splice(indexToRemove)
+        this.setState({
+            addedContacts: contacts
+        })
+        // Set contact list of the parent
+        this.props.setContactList(contacts)
+    }
+
+    render() {
+        return (
+            <div>
+                <h2>Grubuna arkadaşlarını ekle</h2>
+                <p>Grubuna aşağıdaki bağlantılarını seçerek ekleyebilirsin:</p>
+                <List>
+                    {this.props.contacts.map(contact => {
+                        return (
+                            <ContactTheme contact={contact} addContact={this.addContact} removeContact={this.removeContact} />
+                        )
+                    })}
+                </List>
+            </div>
+        )
+    }
+}
+
 class NewChatGroupFormStepper extends React.Component {
     constructor(props) {
         super(props)
@@ -179,6 +279,7 @@ class NewChatGroupFormStepper extends React.Component {
         this.handleNext = this.handleNext.bind(this)
         this.setGroupType = this.setGroupType.bind(this)
         this.setGroupName = this.setGroupName.bind(this)
+        this.setContactList = this.setContactList.bind(this)
     }
     
     getStepContent(step) {
@@ -192,7 +293,7 @@ class NewChatGroupFormStepper extends React.Component {
                                      err={this.state.err === 1} 
                                      />
             case 2:
-                return <div></div>
+                return <ContactsStep contacts={this.props.contacts} setContactList={this.setContactList} />
         }
     }
 
@@ -207,6 +308,13 @@ class NewChatGroupFormStepper extends React.Component {
         this.setState({
             ...this.state,
             groupName: dataFromChild
+        })
+    }
+
+    setContactList(dataFromChild) {
+        this.setState({
+            ...this.state,
+            contacts: dataFromChild
         })
     }
 
@@ -246,7 +354,6 @@ class NewChatGroupFormStepper extends React.Component {
     }
 
     render() {
-        console.log(this.state)
         return (
             <div>
                 <Stepper activeStep={this.state.activeStep}>
@@ -304,7 +411,7 @@ class NewChatGroupDialog extends React.Component {
                 <Dialog open={this.state.show} onClose={this.handleClose}>
                     <DialogTitle id="form-dialog-title">Yeni Grup Oluştur</DialogTitle>
                     <DialogContent>
-                        <NewChatGroupFormStepper setGroupType={this.setGroupType} setGroupName={this.setGroupName} universityOfUser={this.props.universityOfUser} />
+                        <NewChatGroupFormStepper setGroupType={this.setGroupType} setGroupName={this.setGroupName} universityOfUser={this.props.universityOfUser} contacts={this.props.contacts} />
                     </DialogContent>
                     <IconButton onClick={this.handleClose} id="new-group-form-dialog-close-button">
                         <CloseIcon></CloseIcon>

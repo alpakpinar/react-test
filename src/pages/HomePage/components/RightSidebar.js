@@ -73,7 +73,7 @@ class RightSidebar extends React.Component {
             const username = contact.username
             return (
                 <List>
-                    <ListItem button onClick={this.renderUserMenu}>
+                    <ListItem button onClick={username !== this.props.username ? this.renderUserMenu : null}>
                         <ListItemIcon>
                             <Avatar>{username[0].toUpperCase()}</Avatar>
                         </ListItemIcon>

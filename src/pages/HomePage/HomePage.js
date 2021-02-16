@@ -9,6 +9,7 @@ import NewChatGroupDialog from './components/NewChatGroupDialog'
 import ProfileLandingPage from './components/ProfileLandingPage'
 import UsernameContainer from './components/UsernameContainer'
 import SettingsMenu from './components/SettingsMenu'
+import HomePageHeader from './components/HomePageHeader'
 
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -388,7 +389,7 @@ class HomePage extends React.Component {
                 newRoomId = "c-room-1"
             }
             return (
-                <NewChatGroupDialog show={true} setActiveTab={this.setActiveTab} universityOfUser={this.state.university} />
+                <NewChatGroupDialog show={true} setActiveTab={this.setActiveTab} universityOfUser={this.state.university} contacts={this.state.contacts} />
             )
         }
     }
@@ -404,9 +405,10 @@ class HomePage extends React.Component {
 
         return (
             <div className="home-container">
+                <HomePageHeader username={this.state.username} name={this.state.name} handleLogout={this.handleLogout}/> 
                 <div className="flex-container">
                     <div className="home-sidebar">
-                        <UsernameContainer username={this.state.username} name={this.state.name} />
+                        {/* <UsernameContainer username={this.state.username} name={this.state.name} /> */}
                         <LeftNavigation 
                             chatrooms={this.state.chat_rooms} 
                             announcement_rooms={this.state.announcement_rooms} 
@@ -416,10 +418,10 @@ class HomePage extends React.Component {
                             />
                     </div>
                     <div className="home-main">  
-                        <div className="main-room-header">
-                            <h2>{this.getHeader(all_rooms)}</h2>
-                            <SettingsMenu handleLogout={this.handleLogout}/>
-                        </div>
+                        {/* <div className="main-room-header"> */}
+                            {/* <h2>{this.getHeader(all_rooms)}</h2> */}
+                            {/* <SettingsMenu handleLogout={this.handleLogout}/> */}
+                        {/* </div> */}
                         {this.renderMainSide()}
                     </div>
                 </div>
