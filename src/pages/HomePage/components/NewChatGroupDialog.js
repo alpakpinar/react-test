@@ -322,6 +322,13 @@ class NewChatGroupFormStepper extends React.Component {
     }
 
     handleNext(e) {
+        // Check if we're at the last step
+        if (this.state.activeStep === 2) {
+            // We're submitting the form from the parent dialog component, set the state of that component
+            this.props.setStateInMainDialog(this.state)
+            return
+        }
+        // If not, proceed depending on the step we're currently in
         // For group name step, check that it is non-empty
         if (this.state.activeStep === 1) {
             const validData = this.state.groupName.trim() !== ''
@@ -391,8 +398,11 @@ class NewChatGroupDialog extends React.Component {
             show: this.props.show,
             groupType: "Kulüp",
             groupName: null,
+            university: null,
+            contacts: null,
         }
         this.handleClose = this.handleClose.bind(this)
+        this.setStateInMainDialog = this.setStateInMainDialog.bind(this)
     }
 
     handleClose() {
@@ -402,13 +412,23 @@ class NewChatGroupDialog extends React.Component {
         this.props.setActiveTab('')
     }
 
+    setStateInMainDialog(dataFromStepper) {
+        // Set the state of this component upon submission from child stepper.
+        this.setState({
+            groupType  : dataFromStepper.groupType,
+            groupName  : dataFromStepper.groupName,
+            university : dataFromStepper.university,
+            contacts   : dataFromStepper.contacts,
+        })
+    }
+ 
     render() {
         return (
             <div>
                 <Dialog open={this.state.show} onClose={this.handleClose}>
                     <DialogTitle id="form-dialog-title">Yeni Grup Oluştur</DialogTitle>
                     <DialogContent>
-                        <NewChatGroupFormStepper setGroupType={this.setGroupType} setGroupName={this.setGroupName} universityOfUser={this.props.universityOfUser} contacts={this.props.contacts} />
+                        <NewChatGroupFormStepper universityOfUser={this.props.universityOfUser} contacts={this.props.contacts} setStateInMainDialog={this.setStateInMainDialog} />
                     </DialogContent>
                     <IconButton onClick={this.handleClose} id="new-group-form-dialog-close-button">
                         <CloseIcon></CloseIcon>
