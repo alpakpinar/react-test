@@ -115,6 +115,12 @@ class RoomThemeStep extends React.Component {
         })
         // Set the state of the parent component
         this.props.setGroupType(e.target.value)
+
+        // If this is an enter keypress, move on to the next step
+        // after setting the value
+        if (e.charCode === 13) {
+            this.props.handleNext()
+        }
     }
 
     getRoomLabelElement(roomtheme) {
@@ -149,7 +155,7 @@ class RoomThemeStep extends React.Component {
             <div>
                 <h2>Grubuna bir tema bulalım</h2>
                 <p>Grubun için aşağıdaki hazır temalardan birini seçebilirsin:</p>
-                <RadioGroup id="group-type-selection" aria-label="Grup tipi" value={this.state.activeRadioButtonName} onChange={this.handleChange}>
+                <RadioGroup id="group-type-selection" aria-label="Grup tipi" value={this.state.activeRadioButtonName} onKeyPress={this.handleChange} onChange={this.handleChange}>
                     <FormControlLabel value="Kulüp" control={<Radio />} label={this.getRoomLabelElement("Kulüp")} />
                     <FormControlLabel value="Ders" control={<Radio />} label={this.getRoomLabelElement("Ders")} />
                     <h3>Sosyal gruplar</h3>
@@ -179,6 +185,11 @@ class RoomNameStep extends React.Component {
         })
         // Update the state of parent component
         this.props.setGroupName(e.target.value)
+        // If this is an enter keypress, move on to the next step
+        // after setting the value
+        if (e.charCode === 13) {
+            this.props.handleNext()
+        }
     }
 
     render() {
@@ -193,11 +204,13 @@ class RoomNameStep extends React.Component {
                                     autoComplete="off" 
                                     id="group-name-text-field" 
                                     value={this.props.currentGroupname} 
-                                    onChange={this.handleChange} /> : <TextField label="Grup ismi" 
+                                    onChange={this.handleChange}
+                                    onKeyPress={this.handleChange} /> : <TextField label="Grup ismi" 
                                                                                 autoComplete="off" 
                                                                                 id="group-name-text-field" 
                                                                                 value={this.props.currentGroupname} 
-                                                                                onChange={this.handleChange} /> }
+                                                                                onChange={this.handleChange}
+                                                                                onKeyPress={this.handleChange} /> }
                 
                 <br></br><br></br>
                 <TextField label="Üniversite" helperText="Bu odaya sadece bu üniversiteden bağlantılar katılabilir." autoComplete="off" id="group-name-text-field" disabled value={this.props.universityOfUser} />
@@ -243,7 +256,7 @@ class ContactsStep extends React.Component {
             <div>
                 <h2>Grubuna arkadaşlarını ekle</h2>
                 <p>Grubuna aşağıdaki bağlantılarını seçerek ekleyebilirsin:</p>
-                <List>
+                <List onKeyPress={this.props.handleNext}>
                     {this.props.contacts.map(contact => {
                         return (
                             <ContactTheme contact={contact} addContact={this.addContact} removeContact={this.removeContact} />
@@ -270,15 +283,18 @@ class NewChatGroupFormStepper extends React.Component {
     getStepContent(step) {
         switch(step) {
             case 0:
-                return <RoomThemeStep setGroupType={this.props.setGroupType} />
+                return <RoomThemeStep setGroupType={this.props.setGroupType} handleNext={this.props.handleNext} />
             case 1:
                 return <RoomNameStep setGroupName={this.props.setGroupName} 
                                      universityOfUser={this.props.universityOfUser}
                                      currentGroupname={this.props.groupName}
                                      err={this.props.err === 1} 
+                                     handleNext={this.props.handleNext}
                                      />
             case 2:
-                return <ContactsStep contacts={this.props.contacts} setContactList={this.props.setContactList} />
+                return <ContactsStep contacts={this.props.contacts} 
+                                     setContactList={this.props.setContactList} 
+                                     handleNext={this.props.handleNext} />
             case 3:
                 return <LoadingStep />
         }
@@ -437,6 +453,7 @@ class NewChatGroupDialog extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         return (
             <div>
                 <Dialog open={this.state.show} onClose={this.handleClose}>
@@ -452,6 +469,7 @@ class NewChatGroupDialog extends React.Component {
                                 activeStep={this.state.activeStep}
                                 steps={this.steps}
                                 err={this.state.err}
+                                handleNext={this.handleNext}
                                 />
                     </DialogContent>
                     <DialogActions>
