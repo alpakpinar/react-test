@@ -24,6 +24,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
 import Divider from '@material-ui/core/Divider'
+import Box from '@material-ui/core/Box'
 
 import LaptopChromebookIcon from '@material-ui/icons/LaptopChromebook'
 import GroupIcon from '@material-ui/icons/Group'
@@ -33,6 +34,7 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import AddIcon from '@material-ui/icons/Add'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 class RoomTheme extends React.Component {
     /* Re-usable room theme for different room types. */
@@ -253,6 +255,17 @@ class ContactsStep extends React.Component {
     }
 }
 
+class LoadingStep extends React.Component {
+    render() {
+        return (
+            <Box>
+                <Typography variant="h6">Grubun oluşturuluyor...</Typography>
+                <CircularProgress style={{margin: "20px 0"}} />
+            </Box>
+        )
+    }
+}
+
 class NewChatGroupFormStepper extends React.Component {
     getStepContent(step) {
         switch(step) {
@@ -266,6 +279,8 @@ class NewChatGroupFormStepper extends React.Component {
                                      />
             case 2:
                 return <ContactsStep contacts={this.props.contacts} setContactList={this.props.setContactList} />
+            case 3:
+                return <LoadingStep />
         }
     }
 
@@ -282,15 +297,7 @@ class NewChatGroupFormStepper extends React.Component {
                     })}
                 </Stepper>
                 <div>
-                    {this.props.activeStep === this.props.steps.length ? (
-                        <div>
-                            <Typography>Grup oluşturuldu!</Typography>
-                        </div>
-                    ) : (
-                        <div>
-                            <Typography>{this.getStepContent(this.props.activeStep)}</Typography>
-                        </div>
-                    )}
+                    <Typography>{this.getStepContent(this.props.activeStep)}</Typography>
                 </div>
             </div>
         ) 
@@ -341,11 +348,16 @@ class NewChatGroupDialog extends React.Component {
         })
     }
 
-    handleNext() {
+    async handleNext() {
         // Check if we're at the last step
         if (this.state.activeStep === 2) {
             // We're submitting the form
-            this.handleSubmit()
+            this.setState({
+                ...this.state,
+                activeStep: this.state.activeStep + 1
+            })
+            await this.handleSubmit()
+            return
         }
         // If not, proceed depending on the step we're currently in
         // For group name step, check that it is non-empty
@@ -366,7 +378,7 @@ class NewChatGroupDialog extends React.Component {
         })
     }
 
-    handleSubmit() {
+    async handleSubmit() {
         /* Handle form submission. */
         const dataToSend = {
             chatRoomName : this.state.groupName,
@@ -376,17 +388,18 @@ class NewChatGroupDialog extends React.Component {
             chatRoomId   : "temp",
         }
         const endpoint = '/api/chatrooms'
-        fetch(endpoint, {
-            method: 'POST',
-            body: JSON.stringify(dataToSend),
-            headers: {
-                'Accept' : 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(jsonResponse => {
-            // Continue here...
-        })
+
+        // fetch(endpoint, {
+        //     method: 'POST',
+        //     body: JSON.stringify(dataToSend),
+        //     headers: {
+        //         'Accept' : 'application/json'
+        //     }
+        // })
+        // .then(response => response.json())
+        // .then(jsonResponse => {
+        //     // Continue here...
+        // })
     }
 
     setGroupType(dataFromChild) {
@@ -442,10 +455,16 @@ class NewChatGroupDialog extends React.Component {
                                 />
                     </DialogContent>
                     <DialogActions>
-                        <Button id="stepper-button" disabled={this.state.activeStep === 0} onClick={this.handleBack}>Geri</Button>
-                        <Button id="stepper-button" variant="contained" color="primary" onClick={this.handleNext}>
-                            {this.state.activeStep === this.steps.length - 1 ? "Grup Oluştur" : "İleri"}
-                        </Button>
+                        {this.state.activeStep !== 3 ? (
+                            <Box>
+                                <Button id="stepper-button" disabled={this.state.activeStep === 0} onClick={this.handleBack}>Geri</Button>
+                                <Button id="stepper-button" variant="contained" color="primary" onClick={this.handleNext}>
+                                    {this.state.activeStep === this.steps.length - 1 ? "Grup Oluştur" : "İleri"}
+                                </Button>
+                            </Box>
+                        ) : (
+                            <Box></Box>
+                        )}
                     </DialogActions>
                     <IconButton onClick={this.handleClose} id="new-group-form-dialog-close-button">
                         <CloseIcon></CloseIcon>
