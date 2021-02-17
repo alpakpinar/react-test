@@ -16,7 +16,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
 import List from '@material-ui/core/List'
@@ -255,64 +254,85 @@ class ContactsStep extends React.Component {
 }
 
 class NewChatGroupFormStepper extends React.Component {
+    getStepContent(step) {
+        switch(step) {
+            case 0:
+                return <RoomThemeStep setGroupType={this.props.setGroupType} />
+            case 1:
+                return <RoomNameStep setGroupName={this.props.setGroupName} 
+                                     universityOfUser={this.props.universityOfUser}
+                                     currentGroupname={this.props.groupName}
+                                     err={this.props.err === 1} 
+                                     />
+            case 2:
+                return <ContactsStep contacts={this.props.contacts} setContactList={this.props.setContactList} />
+        }
+    }
+
+    render() {
+        return (
+            <div>
+                <Stepper activeStep={this.props.activeStep}>
+                    {this.props.steps.map((label, index) => {
+                        return (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                            </Step>
+                        )
+                    })}
+                </Stepper>
+                <div>
+                    {this.props.activeStep === this.props.steps.length ? (
+                        <div>
+                            <Typography>Grup oluşturuldu!</Typography>
+                        </div>
+                    ) : (
+                        <div>
+                            <Typography>{this.getStepContent(this.props.activeStep)}</Typography>
+                        </div>
+                    )}
+                </div>
+            </div>
+        ) 
+    }
+}
+
+class NewChatGroupDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             activeStep: 0,
+            err: -1,
+            show: this.props.show,
             groupType: "Kulüp",
             groupName: "",
-            university: this.props.universityOfUser,
             contacts: [],
-            err: -1
+            universityOfUser: this.props.universityOfUser,
+            waitingForServerResponse: false
         }
-
+        
+        // Form steps
         this.steps = [
             'Grup temasını seç',
             'Gruba bir isim ver',
             'Bağlantılarını gruba ekle'
         ]
-        
-        this.handleBack = this.handleBack.bind(this)
+
+        this.handleClose = this.handleClose.bind(this)
         this.handleNext = this.handleNext.bind(this)
+        this.handleBack = this.handleBack.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+
         this.setGroupType = this.setGroupType.bind(this)
         this.setGroupName = this.setGroupName.bind(this)
         this.setContactList = this.setContactList.bind(this)
     }
-    
-    getStepContent(step) {
-        switch(step) {
-            case 0:
-                return <RoomThemeStep setGroupType={this.setGroupType} />
-            case 1:
-                return <RoomNameStep setGroupName={this.setGroupName} 
-                                     universityOfUser={this.props.universityOfUser}
-                                     currentGroupname={this.state.groupName}
-                                     err={this.state.err === 1} 
-                                     />
-            case 2:
-                return <ContactsStep contacts={this.props.contacts} setContactList={this.setContactList} />
-        }
-    }
 
-    setGroupType(dataFromChild) {
+    handleClose() {
         this.setState({
-            ...this.state,
-            groupType: dataFromChild
+            show: false
         })
-    }
-
-    setGroupName(dataFromChild) {
-        this.setState({
-            ...this.state,
-            groupName: dataFromChild
-        })
-    }
-
-    setContactList(dataFromChild) {
-        this.setState({
-            ...this.state,
-            contacts: dataFromChild
-        })
+        this.props.setActiveTab('')
     }
 
     handleBack() {
@@ -321,12 +341,11 @@ class NewChatGroupFormStepper extends React.Component {
         })
     }
 
-    handleNext(e) {
+    handleNext() {
         // Check if we're at the last step
         if (this.state.activeStep === 2) {
-            // We're submitting the form from the parent dialog component, set the state of that component
-            this.props.setStateInMainDialog(this.state)
-            return
+            // We're submitting the form
+            this.handleSubmit()
         }
         // If not, proceed depending on the step we're currently in
         // For group name step, check that it is non-empty
@@ -347,89 +366,87 @@ class NewChatGroupFormStepper extends React.Component {
         })
     }
 
-    removeErrorOnGroupname() {
-        // Once the group name field is filled again, remove the unnecessary error
-        if (this.state.err === 1 && this.state.groupName !== '') {
+    handleSubmit() {
+        /* Handle form submission. */
+        const dataToSend = {
+            chatRoomName : this.state.groupName,
+            chatRoomType : this.state.groupType,
+            contacts     : this.state.contacts,
+            university   : this.state.universityOfUser,
+            chatRoomId   : "temp",
+        }
+        const endpoint = '/api/chatrooms'
+        fetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(dataToSend),
+            headers: {
+                'Accept' : 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(jsonResponse => {
+            // Continue here...
+        })
+    }
+
+    setGroupType(dataFromChild) {
+        this.setState({
+            ...this.state,
+            groupType: dataFromChild
+        })
+    }
+
+    setGroupName(dataFromChild) {
+        if (this.state.err !== 1) {
             this.setState({
                 ...this.state,
-                err: -1
+                groupName: dataFromChild
             })
         }
-    }
-
-    render() {
-        return (
-            <div>
-                <Stepper activeStep={this.state.activeStep}>
-                    {this.steps.map((label, index) => {
-                        return (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        )
-                    })}
-                </Stepper>
-                <div>
-                    {this.state.activeStep === this.steps.length ? (
-                        <div>
-                            <Typography>Grup oluşturuldu!</Typography>
-                        </div>
-                    ) : (
-                        <div>
-                            <Typography>{this.getStepContent(this.state.activeStep)}</Typography>
-                            <div>
-                                <Button id="stepper-button" disabled={this.state.activeStep === 0} onClick={this.handleBack}>Geri</Button>
-                                <Button id="stepper-button" variant="contained" color="primary" onClick={this.handleNext}>
-                                    {this.state.activeStep === this.steps.length - 1 ? "Grup Oluştur" : "İleri"}
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        ) 
-    }
-}
-
-class NewChatGroupDialog extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            show: this.props.show,
-            groupType: "Kulüp",
-            groupName: null,
-            university: null,
-            contacts: null,
+        // A bit tricky... If we have an existing warning in the input 
+        // text field and user fills it, remove the warning.
+        else {
+            if ((this.state.err === 1) && (dataFromChild !== "")) {
+                this.setState({
+                    ...this.state,
+                    err: -1,
+                    groupName: dataFromChild
+                })
+            }
         }
-        this.handleClose = this.handleClose.bind(this)
-        this.setStateInMainDialog = this.setStateInMainDialog.bind(this)
     }
 
-    handleClose() {
+    setContactList(dataFromChild) {
         this.setState({
-            show: false
+            ...this.state,
+            contacts: dataFromChild
         })
-        this.props.setActiveTab('')
     }
 
-    setStateInMainDialog(dataFromStepper) {
-        // Set the state of this component upon submission from child stepper.
-        this.setState({
-            groupType  : dataFromStepper.groupType,
-            groupName  : dataFromStepper.groupName,
-            university : dataFromStepper.university,
-            contacts   : dataFromStepper.contacts,
-        })
-    }
- 
     render() {
         return (
             <div>
                 <Dialog open={this.state.show} onClose={this.handleClose}>
                     <DialogTitle id="form-dialog-title">Yeni Grup Oluştur</DialogTitle>
                     <DialogContent>
-                        <NewChatGroupFormStepper universityOfUser={this.props.universityOfUser} contacts={this.props.contacts} setStateInMainDialog={this.setStateInMainDialog} />
+                        <NewChatGroupFormStepper 
+                                universityOfUser={this.props.universityOfUser} 
+                                contacts={this.props.contacts} 
+                                groupName={this.state.groupName}
+                                setContactList={this.setContactList}
+                                setGroupName={this.setGroupName}
+                                setGroupType={this.setGroupType}
+                                activeStep={this.state.activeStep}
+                                steps={this.steps}
+                                err={this.state.err}
+                                />
                     </DialogContent>
+                    <DialogActions>
+                        <Button id="stepper-button" disabled={this.state.activeStep === 0} onClick={this.handleBack}>Geri</Button>
+                        <Button id="stepper-button" variant="contained" color="primary" onClick={this.handleNext}>
+                            {this.state.activeStep === this.steps.length - 1 ? "Grup Oluştur" : "İleri"}
+                        </Button>
+                    </DialogActions>
                     <IconButton onClick={this.handleClose} id="new-group-form-dialog-close-button">
                         <CloseIcon></CloseIcon>
                     </IconButton>
