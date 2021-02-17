@@ -87,6 +87,9 @@ const useStyles = makeStyles((theme) => ({
                 </IconButton>
                 <Menu
                   id="menu-appbar"
+                  style={{
+                    marginTop: "40px"
+                  }}
                   anchorEl={anchorEl}
                   anchorOrigin={{
                     vertical: 'top',
