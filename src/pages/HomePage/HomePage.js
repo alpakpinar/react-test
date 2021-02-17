@@ -172,7 +172,7 @@ class LeftNavigation extends React.Component {
                         <ListItemIcon>
                             <AnnouncementIcon></AnnouncementIcon>
                         </ListItemIcon>
-                        <ListItemText primary="Anonslar" />
+                        <ListItemText primary="Duyurular" />
                         {this.state.nests.announcementsOpen ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <NestedList show={this.state.nests.announcementsOpen} items={this.props.announcement_rooms} type="announcement" setActiveTab={this.props.setActiveTab} /> 

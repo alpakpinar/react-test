@@ -14,6 +14,8 @@ import Menu from '@material-ui/core/Menu'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import Divider from '@material-ui/core/Divider'
 import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import Box from '@material-ui/core/Box'
 
 import NotificationsIcon from '@material-ui/icons/Notifications'
 
@@ -46,6 +48,17 @@ const useStyles = makeStyles((theme) => ({
       setAnchorEl(null);
     };
   
+    const menuButtonStyle = {
+      margin: "0 15px", 
+      textTransform: "none", 
+      fontSize: "16px"
+    }
+
+    const menuBoxStyle = {
+      marginRight: "25em",
+      marginLeft: "10em",
+    }
+
     return (
       <div className={classes.root}>
         <AppBar position="static" className={classes.appbar}>
@@ -56,6 +69,11 @@ const useStyles = makeStyles((theme) => ({
             <Typography variant="h6" className={classes.title}>
               KampüsteKal
             </Typography>
+            <Box style={menuBoxStyle}>
+              <Button color="inherit" style={menuButtonStyle}>KampüsteKal</Button>
+              <Button color="inherit" style={menuButtonStyle}>Blog</Button>
+              <Button color="inherit" style={menuButtonStyle}>İletişim</Button>
+            </Box>
             <Typography>{props.username}</Typography>
               <div>
                 <IconButton

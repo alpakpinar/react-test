@@ -157,11 +157,10 @@ class ProfileLandingPage extends React.Component {
         return (
             <div>
                 <div className="search-bar-container">
-                    {/* <h1 style={{marginTop: "50px"}}>Topluluk keşfet</h1> */}
-                    <Typography variant="h4" style={{margin: "30px"}}>Topluluk keşfet</Typography>
+                    <Typography variant="h4" style={{margin: "60px 0 30px 0"}}>Topluluk keşfet</Typography>
                     <SearchBar chatrooms={this.state.chatrooms}/>
                     <br></br>
-                    <Button variant="contained" color="primary" style={{width: "150px", 'font-size': "20px"}}>Ara</Button>
+                    <Button variant="contained" color="primary" style={{width: "150px", fontSize: "20px", textTransform: "none"}}>Ara</Button>
                 </div>
             </div>
         )
