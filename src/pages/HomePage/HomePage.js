@@ -2,13 +2,9 @@ import React from 'react'
 import {Redirect} from 'react-router-dom';
 import './HomePage.css'
 
-import Navigation from '../LandingPage/components/Navigation'
 import ChatRoom from './components/ChatRoom'
-import NewChatGroupForm from './components/NewChatGroupForm'
 import NewChatGroupDialog from './components/NewChatGroupDialog'
 import ProfileLandingPage from './components/ProfileLandingPage'
-import UsernameContainer from './components/UsernameContainer'
-import SettingsMenu from './components/SettingsMenu'
 import HomePageHeader from './components/HomePageHeader'
 
 import List from '@material-ui/core/List'
@@ -237,7 +233,6 @@ class HomePage extends React.Component {
         this.isActiveTab = this.isActiveTab.bind(this)
         this.setActiveTab = this.setActiveTab.bind(this)
         this.renderMainSide = this.renderMainSide.bind(this)
-        this.handleExitGroup = this.handleExitGroup.bind(this)
         this.userLoggedIn = this.userLoggedIn.bind(this)
     }
     
@@ -268,53 +263,12 @@ class HomePage extends React.Component {
         return false
     }
 
-    handleExitGroup(e) {
-        /* Handle the situation where user selects to leave the group. */
-        e.preventDefault()
-        // We send a DELETE request to /api/chatrooms/{roomId} to remove the user from the selected chat room
-        const request_body = {
-            usernameToRemove: this.state.username
-        }
-        fetch(`/api/chatrooms/${e.target.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type' : 'application/json',
-                'Accept' : 'application/json'
-            },
-            body: JSON.stringify(request_body)
-        })
-        .then(response => response.json())
-        .then(jsonResponse => {
-            // Just reload the home page after successful deletion of the chat room (prone to some bugs)
-            window.location.reload()
-        })
-    }
-
     isActiveTab(tabId) {
         return this.state.activeTabId === tabId;
     }
 
     setActiveTab(tabid) {
         this.setState({activeTabId: tabid});
-    }
-
-    getHeader(all_rooms) {
-        /* Get the appropriate header for the room we're displaying on the right hand side of the main screen */
-        let header = null;
-        if (this.state.activeTabId === '' || this.state.activeTabId === 'group-search') {
-            header = ''
-        }
-        else if (this.state.activeTabId.includes('room')) {
-            header = all_rooms.find(room => room.roomId === this.state.activeTabId).name
-        }
-        // DM messages, display the username as header
-        else if (this.state.activeTabId.includes('dm')) {
-            header = this.state.contacts.find(contact => contact.roomId === this.state.activeTabId).username
-        }
-        else { 
-            header = 'Yeni Grup Oluştur'
-        }
-        return header
     }
 
     componentDidMount() {
@@ -335,26 +289,6 @@ class HomePage extends React.Component {
             })
         })
 
-        // Event listener to close dropdown menu in case user clicks somewhere random
-        if (this.userLoggedIn()) {
-            document.addEventListener('click', this.closeDropdownOnClick)
-        }
-    }
-
-    closeDropdownOnClick(e) {
-        /* 
-        If the dropdown menu is open and user clicks outside the dropdown button to close it,
-        handle the situation and close the dropdown menu.
-        */
-        if (!e.target.matches('.settings-dropdown-btn')) {
-            const dropdown_menu = document.getElementById('dropdown-menu')
-            if (!dropdown_menu) {
-                return
-            }
-            if (dropdown_menu.classList.contains('dropdown-show')) {
-                dropdown_menu.classList.remove('dropdown-show')
-            }
-        }
     }
 
     renderMainSide() {
@@ -408,7 +342,6 @@ class HomePage extends React.Component {
                 <HomePageHeader username={this.state.username} name={this.state.name} handleLogout={this.handleLogout}/> 
                 <div className="flex-container">
                     <div className="home-sidebar">
-                        {/* <UsernameContainer username={this.state.username} name={this.state.name} /> */}
                         <LeftNavigation 
                             chatrooms={this.state.chat_rooms} 
                             announcement_rooms={this.state.announcement_rooms} 
@@ -418,10 +351,6 @@ class HomePage extends React.Component {
                             />
                     </div>
                     <div className="home-main">  
-                        {/* <div className="main-room-header"> */}
-                            {/* <h2>{this.getHeader(all_rooms)}</h2> */}
-                            {/* <SettingsMenu handleLogout={this.handleLogout}/> */}
-                        {/* </div> */}
                         {this.renderMainSide()}
                     </div>
                 </div>
