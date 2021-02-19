@@ -3,6 +3,7 @@ import RegisterForm from './components/RegisterForm'
 import RegisterPageContent from './components/RegisterPageContent'
 import Footer from '../LandingPage/components/Footer'
 import Navigation from '../LandingPage/components/Navigation'
+import HomePageHeader from '../HomePage/components/HomePageHeader'
 import './RegisterPage.css'
 
 /*
@@ -14,7 +15,7 @@ class RegisterPage extends React.Component {
     render() {
         return (
             <div>
-                <Navigation />
+                <HomePageHeader />
                 <div className="flex-container">
                     <div className="register-form-div">
                         <RegisterForm />

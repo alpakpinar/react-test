@@ -3,6 +3,20 @@ import './LoginForm.css'
 import {NavLink} from 'react-router-dom'
 import Checkbox from '@material-ui/core/Checkbox'
 import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+
+const styles = {
+    textfields: {
+        width: "100%",
+        margin: "10px 0"
+    },
+    buttons: {
+        backgroundColor: "#6495ED",
+        textTransform: "none",
+        marginTop: "10px",
+        width: "120px"
+    }
+}
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -85,22 +99,18 @@ class LoginForm extends React.Component {
                         <p>{this.state.loginMessage}</p>
                     </div>
                     <form className="register-form" onSubmit={this.handleSubmit}>
-                        <label>Kullanici Adi</label>
+                        {/* <label>Kullanici Adi</label>
                         <input type="text" 
                                placeholder="Kullanici adi" 
                                name="username" 
                                onChange={e => this.setUsername(e.target.value)}
                                required>
-                               </input>
+                               </input> */}
+                        <TextField id="login-text-field" label="Kullanıcı adı" style={styles.textfields}></TextField>
+                        <TextField id="login-text-field" label="Şifre" style={styles.textfields}></TextField>
     
-                        <label>Sifre</label>
-                        <input type="password" 
-                               placeholder="Sifre" 
-                               name="password"
-                               onChange={e => this.setPassword(e.target.value)} 
-                               required>
-                               </input>
-    
+                        <Button color="primary" variant="contained" style={styles.buttons}>Giriş Yap</Button>
+
                         <button className="register" type="submit">Giris Yap</button>
                         {/* <Button variant="contained" color="primary" className="login-button">Giriş Yap</Button> */}
                     </form>

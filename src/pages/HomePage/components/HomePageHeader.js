@@ -39,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
   
-  
+    // If a username is passed in as props, we're logged in 
+    const username = props.username ? props.username : null
+    const loggedIn = username !== null
+
     const handleMenu = (event) => {
       setAnchorEl(event.currentTarget);
     };
@@ -54,9 +57,17 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "16px"
     }
 
-    const menuBoxStyle = {
-      marginRight: "25em",
-      marginLeft: "10em",
+    let menuBoxStyle = {
+        marginRight: "25em",
+        marginLeft: "10em",
+    }
+
+    if (!loggedIn) {
+      menuBoxStyle = {
+        marginRight: "43em",
+        textAlign: "center"
+      }
+
     }
 
     return (
@@ -74,45 +85,52 @@ const useStyles = makeStyles((theme) => ({
               <Button color="inherit" style={menuButtonStyle}>Blog</Button>
               <Button color="inherit" style={menuButtonStyle}>İletişim</Button>
             </Box>
-            <Typography>{props.username}</Typography>
+            {loggedIn ?
+              <Typography>{props.username}</Typography> : <div></div>
+            }
+            {loggedIn ?
               <div>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  style={{
-                    marginTop: "40px"
-                  }}
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={handleClose}
-                >
-                <Avatar style={{margin: "auto"}}>{props.username[0].toUpperCase()}</Avatar>
-                <ListSubheader component="div" style={{lineHeight: "30px", margin: "15px 10px"}}>
-                    @{props.username}<br></br>
-                    {props.name}
-                </ListSubheader>
-                <Divider style={{marginBottom: "8px"}} />
-                  <MenuItem onClick={handleClose}>Ayarlar</MenuItem>
-                  <MenuItem onClick={props.handleLogout}>Çıkış Yap</MenuItem>
-                </Menu>
-              </div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                style={{
+                  marginTop: "40px"
+                }}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={open}
+                onClose={handleClose}
+              >
+              <Avatar style={{margin: "auto"}}>{props.username[0].toUpperCase()}</Avatar>
+              <ListSubheader component="div" style={{lineHeight: "30px", margin: "15px 10px"}}>
+                  @{props.username}<br></br>
+                  {props.name}
+              </ListSubheader>
+              <Divider style={{marginBottom: "8px"}} />
+                <MenuItem onClick={handleClose}>Ayarlar</MenuItem>
+                <MenuItem onClick={props.handleLogout}>Çıkış Yap</MenuItem>
+              </Menu>
+            </div>
+            :
+            <div></div>
+            }
+              
           </Toolbar>
         </AppBar>
       </div>
