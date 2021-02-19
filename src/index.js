@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import RegisterPage from './pages/RegisterPage/RegisterPage';
+import NewRegisterPage from './pages/RegisterPage/NewRegisterPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import AdminPage from './pages/AdminPage/AdminPage';
 import HomePage from './pages/HomePage/HomePage';
@@ -32,7 +32,7 @@ class Main extends React.Component {
         <div>
           <Switch>
             <Route path="/" exact component={LandingPage} />
-            <Route path="/register" component={RegisterPage} />
+            <Route path="/register" component={NewRegisterPage} />
             <Route path="/home">
               <HomePage getToken={this.getToken} setToken={this.setToken} />
             </Route>
