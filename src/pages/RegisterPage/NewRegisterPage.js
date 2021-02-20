@@ -137,7 +137,8 @@ class NewRegisterPage extends React.Component {
             surname: '', 
             username: '', 
             email: '', 
-            university: '', 
+            university: '',
+            formControl: false, // Checkbox at the end 
             errors: {
                 'name' : false,
                 'surname' : false,
@@ -145,6 +146,7 @@ class NewRegisterPage extends React.Component {
                 'password' : false,
                 'username' : false,
                 'university' : false,
+                'formControl' : false,
             },
         }
 
@@ -166,11 +168,12 @@ class NewRegisterPage extends React.Component {
         this.validateUsername = this.validateUsername.bind(this)
         this.validateEmail = this.validateEmail.bind(this)
         this.validateUniversity = this.validateUniversity.bind(this)
+        this.validateFormControl = this.validateFormControl.bind(this)
     }
 
     checkRemoveError(field, nowValid) {
         if (this.state.errors[field] && nowValid) {
-            this.setState({...this.state, errors: {field: false}})
+            this.setState({errors: {field: false}})
         }
     }
 
@@ -247,6 +250,12 @@ class NewRegisterPage extends React.Component {
         }
     }
 
+    validateFormControl() {
+        if (!this.state.formControl) {
+            this.setState({...this.state, errors: {'formControl' : true}})
+        }
+    }
+
     onSubmit(e) {
         e.preventDefault()
         
@@ -257,6 +266,7 @@ class NewRegisterPage extends React.Component {
         this.validateEmail()
         this.validatePassword()
         this.validateUniversity()
+        // this.validateFormControl()
     }
 
     render() {
@@ -281,18 +291,12 @@ class NewRegisterPage extends React.Component {
                             <CustomTextField error={this.state.errors.username} id="username" label="Kullanıcı adı" name="username" autoComplete="username" onChange={this.setUsername} />
                             <CustomTextField error={this.state.errors.password} password id="password" label="Şifre" name="password" autoComplete="current-password" onChange={this.setPassword} />
                             
-                            {/* <Grid item xs={12}>
-                                <Autocomplete 
-                                    options={this.universities}
-                                    renderInput={(params) => <TextField {...params} variant="outlined" label="Üniversite" />}
-                                    onChange={(event,university)=>this.setState({university: university})}
-                                />
-                            </Grid> */}
                             <CustomAutocomplete error={this.state.errors.university} universities={this.universities} setUniversity={this.setUniversity} />
                             <Grid item xs={12}>
                                 <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
+                                    control={<Checkbox required color="primary" />}
                                     label="Kullanıcı sözleşmesini okudum ve kabul ediyorum."
+                                    onChange={e => this.setState({...this.state, formControl: !(this.state.formControl)})}
                                 />
                             </Grid>
                         </Grid>
