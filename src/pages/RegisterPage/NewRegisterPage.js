@@ -142,8 +142,8 @@ class NewRegisterPage extends React.Component {
         this.validateEmail = this.validateEmail.bind(this)
     }
 
-    checkRemoveError(field, val) {
-        if (this.state.errors[field] && val !== '') {
+    checkRemoveError(field, nowValid) {
+        if (this.state.errors[field] && nowValid) {
             this.setState({...this.state, errors: {field: false}})
         }
     }
@@ -153,23 +153,25 @@ class NewRegisterPage extends React.Component {
     // ======================
     setName(val) {
         this.setState({...this.state, name: val})
-        this.checkRemoveError("name", val)
+        this.checkRemoveError("name", val !== '')
     }
     setSurname(val) {
         this.setState({...this.state, surname: val})
-        this.checkRemoveError("surname", val)
+        this.checkRemoveError("surname", val !== '')
     }
     setEmail(val) {
         this.setState({...this.state, email: val})
-        this.checkRemoveError("email", val)
+        const nowValid = val.endsWith('edu.tr') && val.includes('@')
+        this.checkRemoveError("email", nowValid)
     }
     setUsername(val) {
         this.setState({...this.state, username: val})
-        this.checkRemoveError("username", val)
+        this.checkRemoveError("username", val !== '')
     }
     setPassword(val) {
         this.setState({...this.state, password: val})
-        this.checkRemoveError("password", val)
+        const nowValid = val.length >= 6
+        this.checkRemoveError("password", nowValid)
     }
 
     // ======================
@@ -205,6 +207,7 @@ class NewRegisterPage extends React.Component {
         if (!valid) {
             this.setState({...this.state, errors: {'password': true}})
         }
+        return valid
     }
 
     onSubmit(e) {
