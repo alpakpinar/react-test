@@ -176,7 +176,7 @@ class LoginPage extends React.Component {
                             </Grid>
                             <Grid item>
                             <Link href="#" variant="body2">
-                                {"Hesbaın yok mu? Kaydol"}
+                                {"Hesabın yok mu? Kaydol"}
                             </Link>
                             </Grid>
                         </Grid>
