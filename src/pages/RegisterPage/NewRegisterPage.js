@@ -16,6 +16,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 
 import HomePageHeader from '../HomePage/components/HomePageHeader'
+import { FunctionsOutlined } from '@material-ui/icons'
 
 function Copyright() {
   return (
@@ -166,9 +167,11 @@ class NewRegisterPage extends React.Component {
         this.validateName = this.validateName.bind(this)
         this.validateSurname = this.validateSurname.bind(this)
         this.validateUsername = this.validateUsername.bind(this)
+        this.validatePassword = this.validatePassword.bind(this)
         this.validateEmail = this.validateEmail.bind(this)
         this.validateUniversity = this.validateUniversity.bind(this)
         this.validateFormControl = this.validateFormControl.bind(this)
+        this.validateInputs = this.validateInputs.bind(this)
     }
 
     checkRemoveError(field, nowValid) {
@@ -218,18 +221,21 @@ class NewRegisterPage extends React.Component {
         if (!valid) {
             this.setState({errors: {...this.state.errors, 'name' : true}})
         }
+        return valid
     }
     validateSurname() {
         const valid = this.state.surname.trim() !== ''
         if (!valid) {
             this.setState({errors: {...this.state.errors, 'surname' : true}})
         }
+        return valid
     }
     validateUsername() {
         const valid = this.state.username.trim() !== ''
         if (!valid) {
             this.setState({errors: {...this.state.errors, 'username' : true}})
         }
+        return valid
     }
     validateEmail() {
         // Valid e-mail format: Ends with .edu.tr
@@ -237,6 +243,7 @@ class NewRegisterPage extends React.Component {
         if (!valid) {
             this.setState({errors: {...this.state.errors, 'email' : true}})
         }
+        return valid
     }
     validatePassword() {
         const valid = this.state.password ? this.state.password.length >= 6 : false
@@ -250,11 +257,25 @@ class NewRegisterPage extends React.Component {
         if (!valid) {
             this.setState({errors: {...this.state.errors, 'university': true}})
         }
+        return valid
     }
 
     validateFormControl() {
-        if (!this.state.formControl) {
+        const valid = this.state.formControl
+        if (!valid) {
             this.setState({errors: {...this.state.errors, 'formControl' : true}})
+        }
+        return valid
+    }
+
+    validateInputs(funcs) {
+        /* Validate all inputs before proceeding to submission. */
+        for (let idx=0; idx < funcs.length; idx++) {
+            let fieldIsValid = funcs[idx]()
+            if (!fieldIsValid) {
+                // If one of the fields is invalid, do not continue to the rest
+                return
+            }
         }
     }
 
@@ -262,13 +283,17 @@ class NewRegisterPage extends React.Component {
         e.preventDefault()
         
         // Validate input data
-        this.validateFormControl()
-        this.validateName()
-        this.validateSurname()
-        this.validateUsername()
-        this.validateEmail()
-        this.validatePassword()
-        this.validateUniversity()
+        const validationFuncs = [
+            this.validateName,
+            this.validateSurname,
+            this.validateEmail,
+            this.validateUsername,
+            this.validatePassword,
+            this.validateUniversity,
+            this.validateFormControl,
+        ]
+
+        this.validateInputs(validationFuncs)
     }
 
     render() {
