@@ -173,7 +173,9 @@ class NewRegisterPage extends React.Component {
 
     checkRemoveError(field, nowValid) {
         if (this.state.errors[field] && nowValid) {
-            this.setState({errors: {field: false}})
+            const currentErrors = this.state.errors
+            currentErrors[field] = false
+            this.setState({errors: currentErrors})
         }
     }
 
@@ -181,29 +183,29 @@ class NewRegisterPage extends React.Component {
     // Setter functions
     // ======================
     setName(val) {
-        this.setState({...this.state, name: val})
+        this.setState({name: val})
         this.checkRemoveError("name", val !== '')
     }
     setSurname(val) {
-        this.setState({...this.state, surname: val})
+        this.setState({surname: val})
         this.checkRemoveError("surname", val !== '')
     }
     setEmail(val) {
-        this.setState({...this.state, email: val})
+        this.setState({email: val})
         const nowValid = val.endsWith('edu.tr') && val.includes('@')
         this.checkRemoveError("email", nowValid)
     }
     setUsername(val) {
-        this.setState({...this.state, username: val})
+        this.setState({username: val})
         this.checkRemoveError("username", val !== '')
     }
     setPassword(val) {
-        this.setState({...this.state, password: val})
+        this.setState({password: val})
         const nowValid = val.length >= 6
         this.checkRemoveError("password", nowValid)
     }
     setUniversity(val) {
-        this.setState({...this.state, university: val})
+        this.setState({university: val})
         const nowValid = this.universities.includes(val)
         this.checkRemoveError("university", nowValid)
     }
@@ -214,45 +216,45 @@ class NewRegisterPage extends React.Component {
     validateName() {
         const valid = this.state.name.trim() !== ''
         if (!valid) {
-            this.setState({...this.state, errors: {'name' : true}})
+            this.setState({errors: {...this.state.errors, 'name' : true}})
         }
     }
     validateSurname() {
         const valid = this.state.surname.trim() !== ''
         if (!valid) {
-            this.setState({...this.state, errors: {'surname' : true}})
+            this.setState({errors: {...this.state.errors, 'surname' : true}})
         }
     }
     validateUsername() {
         const valid = this.state.username.trim() !== ''
         if (!valid) {
-            this.setState({...this.state, errors: {'username' : true}})
+            this.setState({errors: {...this.state.errors, 'username' : true}})
         }
     }
     validateEmail() {
         // Valid e-mail format: Ends with .edu.tr
         const valid = this.state.email ? this.state.email.endsWith('edu.tr') && this.state.email.includes('@') : false
         if (!valid) {
-            this.setState({...this.state, errors: {'email' : true}})
+            this.setState({errors: {...this.state.errors, 'email' : true}})
         }
     }
     validatePassword() {
         const valid = this.state.password ? this.state.password.length >= 6 : false
         if (!valid) {
-            this.setState({...this.state, errors: {'password': true}})
+            this.setState({errors: {...this.state.errors, 'password': true}})
         }
         return valid
     }
     validateUniversity() {
         const valid = this.universities.includes(this.state.university)
         if (!valid) {
-            this.setState({...this.state, errors: {'university': true}})
+            this.setState({errors: {...this.state.errors, 'university': true}})
         }
     }
 
     validateFormControl() {
         if (!this.state.formControl) {
-            this.setState({...this.state, errors: {'formControl' : true}})
+            this.setState({errors: {...this.state.errors, 'formControl' : true}})
         }
     }
 
@@ -260,13 +262,13 @@ class NewRegisterPage extends React.Component {
         e.preventDefault()
         
         // Validate input data
+        this.validateFormControl()
         this.validateName()
         this.validateSurname()
         this.validateUsername()
         this.validateEmail()
         this.validatePassword()
         this.validateUniversity()
-        // this.validateFormControl()
     }
 
     render() {
