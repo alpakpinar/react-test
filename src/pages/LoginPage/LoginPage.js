@@ -43,7 +43,8 @@ class LoginPage extends React.Component {
         super(props)
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            loginStatus: null
         }
 
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -55,6 +56,11 @@ class LoginPage extends React.Component {
 
     setPassword(password) {
         this.setState({password: password})
+    }
+
+    saveTokenToLocalStorage(token) {
+        /* To be used when user checks the "remember me" box */
+        localStorage.setItem('token', JSON.stringify(token))
     }
 
     async loginUser(credentials) {
@@ -88,15 +94,8 @@ class LoginPage extends React.Component {
             // Reload page so that we get redirected
             window.location.reload()
         }
-        else if (response.message === 'User not found') {
-            this.setState({loginMessage: 'Kullanici bulunamadi!'});
-        }
-        else if (response.message === 'Wrong password') {
-            this.setState({loginMessage: 'Yanlis sifre!'});
-        }
-        // In case of server error
         else {
-            this.setState({loginMessage: 'Bir problem oldu!'});
+            this.setState({loginStatus: 'failed'});
         }
     }
 
@@ -119,6 +118,8 @@ class LoginPage extends React.Component {
                         </Typography>
                     </div>
                     <form className={classes.form} onSubmit={this.handleSubmit} noValidate>
+                        {/* Display error message in case of failed login */}
+                        {this.state.loginStatus !== 'failed' ? (
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -128,7 +129,21 @@ class LoginPage extends React.Component {
                             name="username"
                             autoFocus
                             onChange={e => this.setUsername(e.target.value)}
-                        />
+                        /> ) : (
+                            <TextField
+                            error
+                            variant="outlined"
+                            helperText="Kullanıcı adı veya şifre yanlış. Lütfen tekrar deneyin."
+                            margin="normal"
+                            fullWidth
+                            id="username"
+                            label="Kullanıcı Adı"
+                            name="username"
+                            autoFocus
+                            onChange={e => this.setUsername(e.target.value)}
+                        /> 
+
+                        )}
                         <TextField
                             variant="outlined"
                             margin="normal"
