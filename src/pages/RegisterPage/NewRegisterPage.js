@@ -8,11 +8,12 @@ import Checkbox from '@material-ui/core/Checkbox'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 
 import HomePageHeader from '../HomePage/components/HomePageHeader'
 
@@ -78,6 +79,32 @@ function CustomTextField(props) {
     }
 }
 
+function CustomAutocomplete(props) {
+    /* University input field. */
+    if (!props.error) {
+        return (
+            <Grid item xs={12}>
+                <Autocomplete 
+                    options={props.universities}
+                    renderInput={(params) => <TextField {...params} variant="outlined" label="Üniversite" />}
+                    onChange={(event,university) => props.setUniversity(university)}
+                />
+            </Grid>
+        )
+    }
+    else {
+        return (
+            <Grid item xs={12}>
+                <Autocomplete
+                    options={props.universities}
+                    renderInput={(params) => <TextField error helperText="Lütfen bir üniversite seçin." {...params} variant="outlined" label="Üniversite" />}
+                    onChange={(event,university) => props.setUniversity(university)}
+                />
+            </Grid>
+        )
+    }
+}
+
 const useStyles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -121,10 +148,7 @@ class NewRegisterPage extends React.Component {
             },
         }
 
-        // Typical error messages for user
-        this.isRequiredMsg = 'Bu alan zorunludur.'
-        this.badEmailMsg = 'Lütfen geçerli bir email adresi girin.'
-        this.badPasswordMsg = 'Şifre en az 6 karakterden oluşmalıdır.'
+        this.universities = ['Boğaziçi Üniversitesi', 'Koç Üniversitesi', 'Bilgi Üniversitesi']
 
         // Bind functions to component
         this.checkRemoveError = this.checkRemoveError.bind(this)
@@ -135,11 +159,13 @@ class NewRegisterPage extends React.Component {
         this.setEmail = this.setEmail.bind(this)
         this.setUsername = this.setUsername.bind(this)
         this.setPassword = this.setPassword.bind(this)
+        this.setUniversity = this.setUniversity.bind(this)
 
         this.validateName = this.validateName.bind(this)
         this.validateSurname = this.validateSurname.bind(this)
         this.validateUsername = this.validateUsername.bind(this)
         this.validateEmail = this.validateEmail.bind(this)
+        this.validateUniversity = this.validateUniversity.bind(this)
     }
 
     checkRemoveError(field, nowValid) {
@@ -172,6 +198,11 @@ class NewRegisterPage extends React.Component {
         this.setState({...this.state, password: val})
         const nowValid = val.length >= 6
         this.checkRemoveError("password", nowValid)
+    }
+    setUniversity(val) {
+        this.setState({...this.state, university: val})
+        const nowValid = this.universities.includes(val)
+        this.checkRemoveError("university", nowValid)
     }
 
     // ======================
@@ -209,19 +240,26 @@ class NewRegisterPage extends React.Component {
         }
         return valid
     }
+    validateUniversity() {
+        const valid = this.universities.includes(this.state.university)
+        if (!valid) {
+            this.setState({...this.state, errors: {'university': true}})
+        }
+    }
 
     onSubmit(e) {
         e.preventDefault()
+        
         // Validate input data
         this.validateName()
         this.validateSurname()
         this.validateUsername()
         this.validateEmail()
         this.validatePassword()
+        this.validateUniversity()
     }
 
     render() {
-        console.log(this.state)
         const { classes } = this.props
         return (
             <div>
@@ -243,13 +281,14 @@ class NewRegisterPage extends React.Component {
                             <CustomTextField error={this.state.errors.username} id="username" label="Kullanıcı adı" name="username" autoComplete="username" onChange={this.setUsername} />
                             <CustomTextField error={this.state.errors.password} password id="password" label="Şifre" name="password" autoComplete="current-password" onChange={this.setPassword} />
                             
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <Autocomplete 
-                                    options={['Boğaziçi Üniversitesi', 'Koç Üniversitesi', 'Bilgi Üniversitesi']}
+                                    options={this.universities}
                                     renderInput={(params) => <TextField {...params} variant="outlined" label="Üniversite" />}
                                     onChange={(event,university)=>this.setState({university: university})}
                                 />
-                            </Grid>
+                            </Grid> */}
+                            <CustomAutocomplete error={this.state.errors.university} universities={this.universities} setUniversity={this.setUniversity} />
                             <Grid item xs={12}>
                                 <FormControlLabel
                                     control={<Checkbox value="allowExtraEmails" color="primary" />}
