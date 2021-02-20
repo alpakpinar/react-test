@@ -9,3 +9,7 @@ div.flex-child-avatar {
 div.flex-child-username {
     flex: 0 0 60%;
 }
+
+#link-main:hover {
+    text-transform: none;
+}

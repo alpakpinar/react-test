@@ -16,6 +16,7 @@ import Divider from '@material-ui/core/Divider'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
+import Link from '@material-ui/core/Link'
 
 import NotificationsIcon from '@material-ui/icons/Notifications'
 
@@ -78,7 +79,9 @@ const useStyles = makeStyles((theme) => ({
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-              KampüsteKal
+              <Link id="link-main" href="/" color="inherit" style={{textDecoration: "none"}} >
+                KampüsteKal
+              </Link>
             </Typography>
             <Box style={menuBoxStyle}>
               <Button color="inherit" style={menuButtonStyle}>KampüsteKal</Button>

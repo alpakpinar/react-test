@@ -312,7 +312,7 @@ class NewRegisterPage extends React.Component {
                         </Typography>
                         <form className={classes.form} noValidate onSubmit={this.onSubmit}>
                         <Grid container spacing={2}>
-                            <CustomTextField error={this.state.errors.name} small id="firstName" label="Isim" name="firstName" onChange={this.setName} />
+                            <CustomTextField error={this.state.errors.name} small id="firstName" label="İsim" name="firstName" onChange={this.setName} />
                             <CustomTextField error={this.state.errors.surname} small id="lastName" label="Soyisim" name="lastName" onChange={this.setSurname} />
                             <CustomTextField error={this.state.errors.email} id="email" label="xxx@xxx.edu.tr" name="email" autoComplete="email" onChange={this.setEmail} />
                             <CustomTextField error={this.state.errors.username} id="username" label="Kullanıcı adı" name="username" autoComplete="username" onChange={this.setUsername} />
@@ -338,7 +338,7 @@ class NewRegisterPage extends React.Component {
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link href="/login" variant="body2">
                                 Zaten bir hesabın var mı? Giriş yap
                             </Link>
                             </Grid>
