@@ -29,6 +29,55 @@ function Copyright() {
   );
 }
 
+function CustomTextField(props) {
+    /* (Slightly) customized text field component for reusability. */
+    // Warning messages we'll use for errors
+    const helperTexts = {
+        "firstName": "Bu alan zorunludur.",
+        "lastName": "Bu alan zorunludur.",
+        "username": "Bu alan zorunludur.",
+        "email": "Lütfen geçerli bir e-mail adresi girin.",
+        "password": "Şifre en az 6 karakterden oluşmalıdır.",
+    }
+
+    // Regular view
+    if (!props.error) {
+        return (
+            <Grid item xs={12} sm={props.small ? 6 : undefined}>
+                <TextField
+                    variant="outlined"
+                    fullWidth
+                    id={props.id}
+                    label={props.label}
+                    name={props.name}
+                    type={props.password ? "password" : undefined}
+                    autoComplete={props.autoComplete}
+                    onChange={e => props.onChange(e.target.value)}
+                />
+            </Grid>
+            )
+    }
+    // Error view
+    else {
+        return (
+            <Grid item xs={12} sm={props.small ? 6 : undefined}>
+                <TextField
+                    error
+                    helperText={helperTexts[props.name]}
+                    variant="outlined"
+                    fullWidth
+                    id={props.id}
+                    label={props.label}
+                    name={props.name}
+                    type={props.password ? "password" : undefined}
+                    autoComplete={props.autoComplete}
+                    onChange={e => props.onChange(e.target.value)}
+                />
+            </Grid>
+            )
+    }
+}
+
 const useStyles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -57,23 +106,119 @@ class NewRegisterPage extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
             success: false, // If user successfully signs in, redirect to the success page
+            name: '', 
+            surname: '', 
             username: '', 
-            signin_msg: '',
-            warning_messages: {
-                'email' : '',
-                'password' : '',
-                'username' : '',
-                'university' : '',
+            email: '', 
+            university: '', 
+            errors: {
+                'name' : false,
+                'surname' : false,
+                'email' : false,
+                'password' : false,
+                'username' : false,
+                'university' : false,
             },
+        }
+
+        // Typical error messages for user
+        this.isRequiredMsg = 'Bu alan zorunludur.'
+        this.badEmailMsg = 'Lütfen geçerli bir email adresi girin.'
+        this.badPasswordMsg = 'Şifre en az 6 karakterden oluşmalıdır.'
+
+        // Bind functions to component
+        this.checkRemoveError = this.checkRemoveError.bind(this)
+
+        this.onSubmit = this.onSubmit.bind(this)
+        this.setName = this.setName.bind(this)
+        this.setSurname = this.setSurname.bind(this)
+        this.setEmail = this.setEmail.bind(this)
+        this.setUsername = this.setUsername.bind(this)
+        this.setPassword = this.setPassword.bind(this)
+
+        this.validateName = this.validateName.bind(this)
+        this.validateSurname = this.validateSurname.bind(this)
+        this.validateUsername = this.validateUsername.bind(this)
+        this.validateEmail = this.validateEmail.bind(this)
+    }
+
+    checkRemoveError(field, val) {
+        if (this.state.errors[field] && val !== '') {
+            this.setState({...this.state, errors: {field: false}})
+        }
+    }
+
+    // ======================
+    // Setter functions
+    // ======================
+    setName(val) {
+        this.setState({...this.state, name: val})
+        this.checkRemoveError("name", val)
+    }
+    setSurname(val) {
+        this.setState({...this.state, surname: val})
+        this.checkRemoveError("surname", val)
+    }
+    setEmail(val) {
+        this.setState({...this.state, email: val})
+        this.checkRemoveError("email", val)
+    }
+    setUsername(val) {
+        this.setState({...this.state, username: val})
+        this.checkRemoveError("username", val)
+    }
+    setPassword(val) {
+        this.setState({...this.state, password: val})
+        this.checkRemoveError("password", val)
+    }
+
+    // ======================
+    // Input validator functions
+    // ======================
+    validateName() {
+        const valid = this.state.name.trim() !== ''
+        if (!valid) {
+            this.setState({...this.state, errors: {'name' : true}})
+        }
+    }
+    validateSurname() {
+        const valid = this.state.surname.trim() !== ''
+        if (!valid) {
+            this.setState({...this.state, errors: {'surname' : true}})
+        }
+    }
+    validateUsername() {
+        const valid = this.state.username.trim() !== ''
+        if (!valid) {
+            this.setState({...this.state, errors: {'username' : true}})
+        }
+    }
+    validateEmail() {
+        // Valid e-mail format: Ends with .edu.tr
+        const valid = this.state.email ? this.state.email.endsWith('edu.tr') && this.state.email.includes('@') : false
+        if (!valid) {
+            this.setState({...this.state, errors: {'email' : true}})
+        }
+    }
+    validatePassword() {
+        const valid = this.state.password ? this.state.password.length >= 6 : false
+        if (!valid) {
+            this.setState({...this.state, errors: {'password': true}})
         }
     }
 
     onSubmit(e) {
         e.preventDefault()
-        return
+        // Validate input data
+        this.validateName()
+        this.validateSurname()
+        this.validateUsername()
+        this.validateEmail()
+        this.validatePassword()
     }
 
     render() {
+        console.log(this.state)
         const { classes } = this.props
         return (
             <div>
@@ -89,52 +234,17 @@ class NewRegisterPage extends React.Component {
                         </Typography>
                         <form className={classes.form} noValidate onSubmit={this.onSubmit}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="fname"
-                                    name="firstName"
-                                    variant="outlined"
-                                    fullWidth
-                                    id="firstName"
-                                    label="İsim"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    id="lastName"
-                                    label="Soyisim"
-                                    name="lastName"
-                                    autoComplete="lname"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    id="email"
-                                    label="xxx@xxx.edu.tr"
-                                    name="email"
-                                    autoComplete="email"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    name="password"
-                                    label="Şifre"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="current-password"
-                                />
-                            </Grid>
+                            <CustomTextField error={this.state.errors.name} small id="firstName" label="Isim" name="firstName" onChange={this.setName} />
+                            <CustomTextField error={this.state.errors.surname} small id="lastName" label="Soyisim" name="lastName" onChange={this.setSurname} />
+                            <CustomTextField error={this.state.errors.email} id="email" label="xxx@xxx.edu.tr" name="email" autoComplete="email" onChange={this.setEmail} />
+                            <CustomTextField error={this.state.errors.username} id="username" label="Kullanıcı adı" name="username" autoComplete="username" onChange={this.setUsername} />
+                            <CustomTextField error={this.state.errors.password} password id="password" label="Şifre" name="password" autoComplete="current-password" onChange={this.setPassword} />
+                            
                             <Grid item xs={12}>
                                 <Autocomplete 
                                     options={['Boğaziçi Üniversitesi', 'Koç Üniversitesi', 'Bilgi Üniversitesi']}
                                     renderInput={(params) => <TextField {...params} variant="outlined" label="Üniversite" />}
+                                    onChange={(event,university)=>this.setState({university: university})}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -170,9 +280,6 @@ class NewRegisterPage extends React.Component {
             
           );
     }
-  
-
-  
 }
 
 export default withStyles(useStyles, { withTheme: true })(NewRegisterPage)
