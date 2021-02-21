@@ -49,7 +49,7 @@ apiRouter.post('/users', async (req, res) => {
         const result = await users.addUser(name, username, hashedPassword, email, university, client);
         if (result) {
             if (result === 'Username taken') {
-                res.status(400).send();
+                res.status(400).json({ message: "Username taken" });
             }
             else {
                 res.status(201).json(req.body);

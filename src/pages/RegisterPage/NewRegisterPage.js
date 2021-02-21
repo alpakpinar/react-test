@@ -1,4 +1,6 @@
 import React from 'react'
+import { withStyles } from '@material-ui/core/styles'
+
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -9,14 +11,16 @@ import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
+import Snackbar from '@material-ui/core/Snackbar'
+import CircularProgress from '@material-ui/core/CircularProgress'
+
 import Autocomplete from '@material-ui/lab/Autocomplete'
+import MuiAlert from '@material-ui/lab/Alert'
 
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 
 import HomePageHeader from '../HomePage/components/HomePageHeader'
-import { FunctionsOutlined } from '@material-ui/icons'
 
 function Copyright() {
   return (
@@ -29,6 +33,28 @@ function Copyright() {
       {'.'}
     </Typography>
   );
+}
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />
+}
+
+function CustomSnackbar(props) {
+    /* Snackbar component to use for sign in feedback to the user. */
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return
+        }
+        props.closeSnackbar()
+    }
+
+    return (
+        <Snackbar open={props.show} autoHideDuration={10000} onClose={handleClose}>
+            <Alert severity={props.severity} onClose={handleClose}>
+                {props.message}
+            </Alert>
+        </Snackbar>
+    )
 }
 
 function CustomTextField(props) {
@@ -133,7 +159,6 @@ class NewRegisterPage extends React.Component {
         super(props)
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
-            success: false, // If user successfully signs in, redirect to the success page
             name: '', 
             surname: '', 
             username: '', 
@@ -149,12 +174,18 @@ class NewRegisterPage extends React.Component {
                 'university' : false,
                 'formControl' : false,
             },
+            statusMessage: '',
+            statusSeverity: null,
+            snackbarOpen: false,
+            submissionInProgress: false
         }
 
         this.universities = ['Boğaziçi Üniversitesi', 'Koç Üniversitesi', 'Bilgi Üniversitesi']
 
         // Bind functions to component
         this.checkRemoveError = this.checkRemoveError.bind(this)
+
+        this.closeSnackbar = this.closeSnackbar.bind(this)
 
         this.onSubmit = this.onSubmit.bind(this)
         this.setName = this.setName.bind(this)
@@ -172,6 +203,10 @@ class NewRegisterPage extends React.Component {
         this.validateUniversity = this.validateUniversity.bind(this)
         this.validateFormControl = this.validateFormControl.bind(this)
         this.validateInputs = this.validateInputs.bind(this)
+    }
+
+    closeSnackbar() {
+        this.setState({snackbarOpen: false})
     }
 
     checkRemoveError(field, nowValid) {
@@ -274,9 +309,10 @@ class NewRegisterPage extends React.Component {
             let fieldIsValid = funcs[idx]()
             if (!fieldIsValid) {
                 // If one of the fields is invalid, do not continue to the rest
-                return
+                return false
             }
         }
+        return true
     }
 
     onSubmit(e) {
@@ -293,7 +329,50 @@ class NewRegisterPage extends React.Component {
             this.validateFormControl,
         ]
 
-        this.validateInputs(validationFuncs)
+        const allFieldsValid = this.validateInputs(validationFuncs)
+        // If all fields are not valid, do not proceed to submission
+        if (!allFieldsValid) {
+            return
+        }
+
+        // Submission
+        this.setState({submissionInProgress: true})
+        const ENDPOINT = '/api/users'
+
+        const body = {
+            name       : `${this.state.name} ${this.state.surname}`,
+            email      : this.state.email,
+            username   : this.state.username,
+            password   : this.state.password,
+            university : this.state.university,
+        }
+
+        fetch(ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type' : 'application/json',
+                'Accept' : 'appplication/json'
+            }
+        })
+        .then(async response => {
+            // The status message we'll display to the user
+            let statusMessage
+            const stateUpdate = {snackbarOpen: true, submissionInProgress: false}
+            if (response.status === 201) {
+                const jsonResponse = await response.json();
+                statusMessage = `Hesabın oluşturuldu ${jsonResponse.username}! Giriş yapmak için buraya tıkla.`
+                this.setState({statusMessage: statusMessage, statusSeverity: "success", ...stateUpdate})
+            }
+            else if (response.status === 400) {
+                statusMessage = `Maalesef ${body.username} alınmış, başka bir kullanıcı ismi dene!`
+                this.setState({statusMessage: statusMessage, statusSeverity: "warning", ...stateUpdate})
+            }
+            else {
+                statusMessage = 'Bir sunucu hatası oldu!'
+                this.setState({statusMessage: statusMessage, statusSeverity: "error", ...stateUpdate})
+            }    
+        })
     }
 
     render() {
@@ -325,6 +404,7 @@ class NewRegisterPage extends React.Component {
                                     label="Kullanıcı sözleşmesini okudum ve kabul ediyorum."
                                     onChange={e => this.setState({...this.state, formControl: !(this.state.formControl)})}
                                 />
+                                {this.state.errors.formControl ? <Typography style={{color: "red"}}>{"Lütfen bu alanı işaretleyin."}</Typography> : <div></div>}
                             </Grid>
                         </Grid>
                         <Button
@@ -334,7 +414,7 @@ class NewRegisterPage extends React.Component {
                             color="primary"
                             className={classes.submit}
                         >
-                            Kaydol
+                            {this.state.submissionInProgress ? <CircularProgress color="inherit" /> : "Kaydol"}
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
@@ -348,6 +428,11 @@ class NewRegisterPage extends React.Component {
                     <Box mt={5}>
                         <Copyright />
                     </Box>
+                    <CustomSnackbar show={this.state.snackbarOpen} 
+                                    message={this.state.statusMessage} 
+                                    severity={this.state.statusSeverity} 
+                                    closeSnackbar={this.closeSnackbar} 
+                                    />
                 </Container>
             </div>
             
