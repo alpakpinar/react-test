@@ -15,6 +15,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = (theme) => ({
     paper: {
@@ -44,7 +45,8 @@ class LoginPage extends React.Component {
         this.state = {
             username: '',
             password: '',
-            loginStatus: null
+            loginStatus: null,
+            loginAttempt: false
         }
 
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -76,6 +78,7 @@ class LoginPage extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault();
+        this.setState({loginAttempt: true})
         const response = await this.loginUser({
             username: this.state.username,
             password: this.state.password
@@ -97,6 +100,7 @@ class LoginPage extends React.Component {
         else {
             this.setState({loginStatus: 'failed'});
         }
+        this.setState({loginAttempt: false})
     }
 
     render() {
@@ -166,7 +170,7 @@ class LoginPage extends React.Component {
                             color="primary"
                             className={classes.submit}
                         >
-                            Giriş Yap
+                            {this.state.loginAttempt ? <CircularProgress color="inherit" size={30} /> : "Giriş Yap" }
                         </Button>
                         <Grid container>
                             <Grid item xs>
