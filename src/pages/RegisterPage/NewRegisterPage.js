@@ -414,7 +414,7 @@ class NewRegisterPage extends React.Component {
                             color="primary"
                             className={classes.submit}
                         >
-                            {this.state.submissionInProgress ? <CircularProgress color="inherit" /> : "Kaydol"}
+                            {this.state.submissionInProgress ? <CircularProgress color="inherit" size={30} /> : "Kaydol"}
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
