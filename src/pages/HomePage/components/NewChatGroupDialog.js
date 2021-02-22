@@ -8,6 +8,9 @@ import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormHelperText from '@material-ui/core/FormHelperText'
 
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -25,6 +28,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
 import Divider from '@material-ui/core/Divider'
 import Box from '@material-ui/core/Box'
+import Grid from '@material-ui/core/Grid'
 
 import LaptopChromebookIcon from '@material-ui/icons/LaptopChromebook'
 import GroupIcon from '@material-ui/icons/Group'
@@ -176,6 +180,7 @@ class RoomNameStep extends React.Component {
             error: false
         }
         this.handleChange = this.handleChange.bind(this)
+        this.handleSemester = this.handleSemester.bind(this)
     }
 
     handleChange(e) {
@@ -192,28 +197,54 @@ class RoomNameStep extends React.Component {
         }
     }
 
+    handleSemester(e) {
+        this.props.setClassSemester(e.target.value)
+    }
+
     render() {
         return (
             <div style={{marginBottom: "20px"}}>
                 <h2>Şimdi grubuna bir isim bulalım</h2>
                 <p>Grubunun ismini aşağıya yazabilirsin:</p>
-                {this.props.err ? <TextField 
-                                    error
-                                    helperText="Lütfen bir grup ismi girin."
-                                    label="Grup ismi" 
-                                    autoComplete="off" 
-                                    id="group-name-text-field" 
-                                    value={this.props.currentGroupname} 
-                                    onChange={this.handleChange}
-                                    onKeyPress={this.handleChange} /> : <TextField label="Grup ismi" 
-                                                                                autoComplete="off" 
-                                                                                id="group-name-text-field" 
-                                                                                value={this.props.currentGroupname} 
-                                                                                onChange={this.handleChange}
-                                                                                onKeyPress={this.handleChange} /> }
+                <Grid container spacing={6}>
+                    <Grid item>
+                    {this.props.err ? <TextField 
+                                            error
+                                            helperText="Lütfen bir grup ismi girin."
+                                            label="Grup ismi" 
+                                            autoComplete="off" 
+                                            id="group-name-text-field" 
+                                            value={this.props.currentGroupname} 
+                                            onChange={this.handleChange}
+                                            onKeyPress={this.handleChange} /> : <TextField label="Grup ismi" 
+                                                                                        autoComplete="off" 
+                                                                                        id="group-name-text-field" 
+                                                                                        value={this.props.currentGroupname} 
+                                                                                        onChange={this.handleChange}
+                                                                                        onKeyPress={this.handleChange} /> }
+                        
+                    </Grid>
+                    {this.props.groupType === "Ders" ? (
+                        <Grid item>
+                            <Select value={this.props.classSemester} style={{marginTop: "18px", width: "150px"}} defaultValue="Fall-21" onChange={this.handleSemester}>
+                                <MenuItem value={"Fall-21"}>Fall '21</MenuItem>
+                                <MenuItem value={"Spring-22"}>Spring '22</MenuItem>
+                            </Select>
+                            <FormHelperText>Bu alan dersin hangi dönem için olduğunu belirtir.</FormHelperText>
+                        </Grid>
+                    ) : (
+                        <div></div>
+                    )}
+                <br></br>
+                </Grid>
+                <br></br>
+                {/* University field for student-club/class related rooms */}
+                {["Ders", "Kulüp"].includes(this.props.groupType) ? (
+                    <TextField label="Üniversite" helperText="Bu odaya sadece bu üniversiteden bağlantılar katılabilir." autoComplete="off" id="group-name-text-field" disabled value={this.props.universityOfUser} />
+                ): (
+                    <div></div>
+                )}
                 
-                <br></br><br></br>
-                <TextField label="Üniversite" helperText="Bu odaya sadece bu üniversiteden bağlantılar katılabilir." autoComplete="off" id="group-name-text-field" disabled value={this.props.universityOfUser} />
             </div>
         )
     }
@@ -285,11 +316,14 @@ class NewChatGroupFormStepper extends React.Component {
             case 0:
                 return <RoomThemeStep setGroupType={this.props.setGroupType} handleNext={this.props.handleNext} />
             case 1:
-                return <RoomNameStep setGroupName={this.props.setGroupName} 
+                return <RoomNameStep setGroupName={this.props.setGroupName}
+                                     setClassSemester={this.props.setClassSemester} 
+                                     classSemester={this.props.classSemester}
                                      universityOfUser={this.props.universityOfUser}
                                      currentGroupname={this.props.groupName}
                                      err={this.props.err === 1} 
                                      handleNext={this.props.handleNext}
+                                     groupType={this.props.groupType}
                                      />
             case 2:
                 return <ContactsStep contacts={this.props.contacts} 
@@ -330,7 +364,8 @@ class NewChatGroupDialog extends React.Component {
             groupType: "Kulüp",
             groupName: "",
             contacts: [],
-            universityOfUser: this.props.universityOfUser,
+            universityOfUser: this.props.universityOfUser, // Relevant for class/student club related rooms
+            classSemester: '', // Relevant for class related rooms
             waitingForServerResponse: false
         }
         
@@ -349,6 +384,7 @@ class NewChatGroupDialog extends React.Component {
         this.setGroupType = this.setGroupType.bind(this)
         this.setGroupName = this.setGroupName.bind(this)
         this.setContactList = this.setContactList.bind(this)
+        this.setClassSemester = this.setClassSemester.bind(this)
     }
 
     handleClose() {
@@ -401,6 +437,7 @@ class NewChatGroupDialog extends React.Component {
             chatRoomType : this.state.groupType,
             contacts     : this.state.contacts,
             university   : this.state.universityOfUser,
+            semester     : this.state.classSemester,
             chatRoomId   : "temp",
         }
         const endpoint = '/api/chatrooms'
@@ -452,8 +489,11 @@ class NewChatGroupDialog extends React.Component {
         })
     }
 
+    setClassSemester(dataFromChild) {
+        this.setState({classSemester: dataFromChild})
+    }
+
     render() {
-        console.log(this.state)
         return (
             <div>
                 <Dialog open={this.state.show} onClose={this.handleClose}>
@@ -466,6 +506,9 @@ class NewChatGroupDialog extends React.Component {
                                 setContactList={this.setContactList}
                                 setGroupName={this.setGroupName}
                                 setGroupType={this.setGroupType}
+                                setClassSemester={this.setClassSemester}
+                                classSemester={this.state.classSemester}
+                                groupType={this.state.groupType}
                                 activeStep={this.state.activeStep}
                                 steps={this.steps}
                                 err={this.state.err}
